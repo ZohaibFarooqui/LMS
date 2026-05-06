@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(netstat -ano)",
+      "PowerShell($env:DB_DSN; $env:DB_USER; $env:DB_PASSWORD)",
+      "PowerShell($env:DB_DSN)",
+      "PowerShell($env:DB_USER)",
+      "PowerShell($env:DB_PASSWORD)",
+      "PowerShell([System.Environment]::GetEnvironmentVariable\\(\"DB_DSN\", \"Machine\"\\); [System.Environment]::GetEnvironmentVariable\\(\"DB_USER\", \"Machine\"\\); [System.Environment]::GetEnvironmentVariable\\(\"DB_PASSWORD\", \"Machine\"\\))",
+      "PowerShell(Test-NetConnection -ComputerName localhost -Port 1521)",
+      "PowerShell(& \"C:\\\\Erp_Systems\\\\HRMS_LMS_APP\\\\GIT_NEW\\\\LMS-Face-Backend\\\\face_rec\\\\venv310\\\\Scripts\\\\python.exe\" -c \"import insightface; print\\('insightface OK'\\)\" 2>&1)",
+      "PowerShell(& \"C:\\\\Erp_Systems\\\\HRMS_LMS_APP\\\\GIT_NEW\\\\LMS-Face-Backend\\\\face_rec\\\\venv\\\\Scripts\\\\python.exe\" -c \"import insightface; print\\('insightface OK'\\)\" 2>&1)",
+      "PowerShell(& \"C:\\\\Erp_Systems\\\\HRMS_LMS_APP\\\\GIT_NEW\\\\LMS-Backend\\\\.venv\\\\Scripts\\\\pip.exe\" install \"C:\\\\Erp_Systems\\\\HRMS_LMS_APP\\\\GIT_NEW\\\\LMS-Face-Backend\\\\face_rec\\\\insightface-0.7.3-cp310-cp310-win_amd64.whl\" 2>&1)",
+      "PowerShell(Get-Content \"C:\\\\Users\\\\ADMINI~1\\\\AppData\\\\Local\\\\Temp\\\\2\\\\claude\\\\c--Erp-Systems-HRMS-LMS-APP-GIT-NEW\\\\2059d29e-24cd-4139-b402-4acbd70fbfd0\\\\tasks\\\\bo0hk39g2.output\" -Wait -Tail 30)",
+      "PowerShell(& \"C:\\\\Erp_Systems\\\\HRMS_LMS_APP\\\\GIT_NEW\\\\LMS-Backend\\\\.venv\\\\Scripts\\\\pip.exe\" install onnxruntime faiss-cpu mediapipe 2>&1)",
+      "PowerShell(& \"C:\\\\Erp_Systems\\\\HRMS_LMS_APP\\\\GIT_NEW\\\\LMS-Backend\\\\.venv\\\\Scripts\\\\pip.exe\" install \"numpy==1.26.4\" 2>&1)",
+      "PowerShell(& \"C:\\\\Erp_Systems\\\\HRMS_LMS_APP\\\\GIT_NEW\\\\LMS-Backend\\\\.venv\\\\Scripts\\\\pip.exe\" install \"opencv-python==4.8.0.74\" \"opencv-python-headless==4.11.0.86\" \"opencv-contrib-python==4.12.0.88\" 2>&1)",
+      "PowerShell(& \"C:\\\\Erp_Systems\\\\HRMS_LMS_APP\\\\GIT_NEW\\\\LMS-Backend\\\\.venv\\\\Scripts\\\\pip.exe\" install \"numpy==1.26.4\" --force-reinstall --no-deps 2>&1)",
+      "PowerShell(& \"C:\\\\Erp_Systems\\\\HRMS_LMS_APP\\\\GIT_NEW\\\\LMS-Backend\\\\.venv\\\\Scripts\\\\python.exe\" -c \"from insightface.app import FaceAnalysis; print\\('insightface OK'\\)\" 2>&1)",
+      "Bash(Get-ChildItem -Directory -Force)",
+      "Bash(Select-Object Name)",
+      "Bash(xargs grep -l \"background\\\\|service\\\\|worker\\\\|task\\\\|schedule\")"
+    ]
+  }
+}
