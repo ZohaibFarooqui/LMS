@@ -84,10 +84,12 @@ def authenticate_user(username: str, password: str) -> dict | None:
         m_no0    = m[1:]     if m.startswith('0')     else m
 
         # ── STEP 1: SEC_USERNAME (ERP HR admin) ──────────────────────
+        # Fetch raw PASWD first (no decryption) so ORA-28817 on one user
+        # doesn't kill the entire lookup. Decrypt separately afterwards.
         sec_row = None
         try:
             cur.execute("""
-                SELECT USRID, DESCR, datacrypt.decryptdata(PASWD) PASWD , MOBILE, ECODE
+                SELECT USRID, DESCR, PASWD, MOBILE, ECODE
                 FROM SEC_USERNAME
                 WHERE TO_CHAR(MOBILE) IN (:m1, :m2, :m3) AND STATS = 'E'
                 FETCH FIRST 1 ROWS ONLY
@@ -95,7 +97,7 @@ def authenticate_user(username: str, password: str) -> dict | None:
             sec_row = cur.fetchone()
             if not sec_row:
                 cur.execute("""
-                    SELECT USRID, DESCR, datacrypt.decryptdata(PASWD) PASWD , MOBILE, ECODE
+                    SELECT USRID, DESCR, PASWD, MOBILE, ECODE
                     FROM SEC_USERNAME WHERE ECODE = :ec AND STATS = 'E'
                     FETCH FIRST 1 ROWS ONLY
                 """, {"ec": m})
@@ -105,7 +107,17 @@ def authenticate_user(username: str, password: str) -> dict | None:
 
         sec_authenticated = False
         if sec_row:
-            usrid, descr, stored_paswd, sec_mobile, ecode = sec_row
+            usrid, descr, raw_paswd, sec_mobile, ecode = sec_row
+            # Try to decrypt; fall back to raw comparison if decryption fails
+            stored_paswd = None
+            try:
+                cur.execute("SELECT datacrypt.decryptdata(:p) FROM DUAL", {"p": raw_paswd})
+                dec_row = cur.fetchone()
+                stored_paswd = str(dec_row[0]).strip() if dec_row and dec_row[0] else None
+            except Exception as e:
+                print(f"[AUTH] datacrypt.decryptdata failed for USRID={usrid}: {e}")
+                stored_paswd = str(raw_paswd or "").strip()
+
             if (stored_paswd or "").strip() == (password or "").strip():
                 sec_authenticated = True
             else:
@@ -425,6 +437,9 @@ def get_dashboard(card_no: str):
     conn = get_connection()
     cursor = conn.cursor()
     try:
+        # Use MAX() correlated subqueries instead of codename() to avoid ORA-01427
+        # (codename uses SELECT..INTO which fails when the lookup table has duplicate rows).
+        # ALL_LEAVE_BAL_V is also pulled as a subquery to prevent row-multiplication.
         cursor.execute("""
             SELECT
                 e.emp_pk,
@@ -435,15 +450,14 @@ def get_dashboard(card_no: str):
                 e.nic_no,
                 e.designation,
                 e.department,
-                codename('COMPC', e.compc, null) compcnm,
+                (SELECT MAX(ci.DESCR) FROM COMPANY_INFO ci WHERE ci.COMPC = e.compc) compcnm,
                 e.compc,
                 e.brnch AS branch,
-                codename('BRNCH', e.brnch, null) brnchnm,
+                (SELECT MAX(cl.DESCR) FROM COM_LOCATION cl WHERE cl.LCODE = e.brnch) brnchnm,
                 e.hod1 AS hod,
-                codename('HOD', e.hod1, null) hod_nm,
-                b.balance
+                (SELECT MAX(h.NAME) FROM HR_EMP_MASTER h WHERE h.EMPCODE = TO_CHAR(e.hod1)) hod_nm,
+                (SELECT SUM(b.balance) FROM ALL_LEAVE_BAL_V b WHERE b.card_no = e.card_no) balance
             FROM EMPLOYEE e
-            LEFT JOIN ALL_LEAVE_BAL_V b ON e.card_no = b.card_no
             WHERE e.card_no = :card
         """, {"card": card_no})
 
@@ -487,7 +501,7 @@ def get_user_profile(card_no: str):
                 e.email_address,
                 e.address,
                 e.mobile_no,
-                codename('SEX', e.emp_pk, null) gender,
+                e.sex AS gender,
                 e.date_of_birth,
                 e.date_of_join,
                 e.department,
@@ -500,13 +514,13 @@ def get_user_profile(card_no: str):
                 e.type,
                 e.card_no,
                 e.compc,
-                codename('COMPC', e.compc, null) compcnm,
+                (SELECT MAX(ci.DESCR) FROM COMPANY_INFO ci WHERE ci.COMPC = e.compc) compcnm,
                 e.brnch,
-                codename('BRNCH', e.brnch, null) brnchnm,
+                (SELECT MAX(cl.DESCR) FROM COM_LOCATION cl WHERE cl.LCODE = e.brnch) brnchnm,
                 e.hod1,
-                codename('HOD', e.hod1, null) hod1nm,
+                (SELECT MAX(h2.NAME) FROM HR_EMP_MASTER h2 WHERE h2.EMPCODE = TO_CHAR(e.hod1)) hod1nm,
                 e.hod2,
-                codename('HOD', e.hod2, null) hod2nm,
+                (SELECT MAX(h3.NAME) FROM HR_EMP_MASTER h3 WHERE h3.EMPCODE = TO_CHAR(e.hod2)) hod2nm,
                 h.EMPCODE AS emp_code,
                 h.STATUS AS emp_status
             FROM EMPLOYEE e
