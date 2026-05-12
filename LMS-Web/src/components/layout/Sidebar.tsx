@@ -113,7 +113,7 @@ export function Sidebar() {
   const { handleLogout } = useAuthController();
   const [collapsed, setCollapsed] = useState(false);
 
-  const showEmployeeNav = user?.has_employee_features !== false;
+  const showEmployeeNav = !!user?.has_employee_features;
   const navItems = [
     ...(showEmployeeNav ? employeeNavItems : []),
     ...(user?.hr_admin ? hrNavItems : []),

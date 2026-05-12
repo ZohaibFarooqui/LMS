@@ -9,6 +9,8 @@ interface AuthContextType {
   switchCompany: (company: CompanyItem) => void;
   switchBranch: (branch: BranchItem) => void;
   isLoading: boolean;
+  activeCompany: string;
+  activeBranch: string;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -17,6 +19,8 @@ const AuthContext = createContext<AuthContextType>({
   switchCompany: () => {},
   switchBranch: () => {},
   isLoading: true,
+  activeCompany: "",
+  activeBranch: "",
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -56,8 +60,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("lms_user", JSON.stringify(updated));
   }
 
+  const activeCompany = user?.selected_company?.code ?? "";
+  const activeBranch = user?.selected_branch?.code ?? "";
+
   return (
-    <AuthContext.Provider value={{ user, setUser, switchCompany, switchBranch, isLoading }}>
+    <AuthContext.Provider value={{ user, setUser, switchCompany, switchBranch, isLoading, activeCompany, activeBranch }}>
       {children}
     </AuthContext.Provider>
   );

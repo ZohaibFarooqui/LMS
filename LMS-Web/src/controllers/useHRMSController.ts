@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import {
   searchHRMSEmployees,
@@ -32,6 +32,14 @@ function applyCompanyBranchFilter(
 
 export function useHRMSController() {
   const { user, activeCompany, activeBranch } = useAuth();
+
+  // Re-filter displayed list whenever the selected company/branch changes
+  useEffect(() => {
+    if (allEmployees.length === 0) return;
+    setEmployees(applyCompanyBranchFilter(allEmployees, activeCompany, activeBranch));
+    setSearchQuery("");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeCompany, activeBranch]);
 
   // Employee list state
   const [employees, setEmployees] = useState<HRMSSearchResult[]>([]);
