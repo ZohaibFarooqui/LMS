@@ -1,32 +1,30 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Spinner } from "@/components/ui/Spinner";
-import { startLocationTracking, stopLocationTracking } from "@/services/locationTracker";
+
+const EMPLOYEE_ONLY_ROUTES = ["/dashboard", "/leave", "/attendance", "/profile"];
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
-    if (!isLoading && !user) {
+    if (isLoading) return;
+    if (!user) {
       router.push("/");
+      return;
     }
-    // router is intentionally excluded — it's a stable singleton in App Router
-    // but its reference identity can change on navigation, causing spurious re-runs
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, isLoading]);
-
-  // Start location tracking when logged in; stop on logout / unmount
-  useEffect(() => {
-    if (user?.card_no) {
-      startLocationTracking(user.card_no);
-      return () => stopLocationTracking();
+    // SEC_USERNAME users without an employee profile can't access employee pages
+    if (user.has_employee_features === false) {
+      const isEmployeePage = EMPLOYEE_ONLY_ROUTES.some((r) => pathname.startsWith(r));
+      if (isEmployeePage) router.push("/hrms");
     }
-  }, [user?.card_no]);
+  }, [user, isLoading, router, pathname]);
 
   if (isLoading) {
     return (

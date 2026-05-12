@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { login } from "@/services/authService";
 import { useAuth } from "@/context/AuthContext";
+import { User } from "@/models/auth";
 
 export function useAuthController() {
   const [loading, setLoading] = useState(false);
@@ -17,20 +18,23 @@ export function useAuthController() {
     try {
       const response = await login({ username, password });
       if (response.status === "SUCCESS") {
-        const user = {
+        const user: User = {
           card_no: response.card_no,
           emp_name: response.emp_name,
           face_registered: response.face_registered,
           hr_admin: response.hr_admin,
-          has_self_service: response.has_self_service ?? true,
+          has_employee_features: response.has_employee_features ?? true,
           allowed_companies: response.allowed_companies ?? [],
           allowed_branches: response.allowed_branches ?? [],
           company_list: response.company_list ?? [],
           branch_list: response.branch_list ?? [],
+          selected_company: response.company_list?.[0] ?? null,
+          selected_branch: response.branch_list?.[0] ?? null,
         };
         setUser(user);
         localStorage.setItem("lms_user", JSON.stringify(user));
-        router.push("/dashboard");
+        // SEC_USERNAME users without employee profile go straight to HRMS
+        router.push(user.has_employee_features ? "/dashboard" : "/hrms");
       } else {
         setError("Invalid credentials. Please try again.");
       }

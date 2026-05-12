@@ -1,44 +1,33 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useMemo, useCallback, ReactNode } from "react";
-import { User } from "@/models/auth";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { User, CompanyItem, BranchItem } from "@/models/auth";
 
 interface AuthContextType {
   user: User | null;
   setUser: (user: User | null) => void;
+  switchCompany: (company: CompanyItem) => void;
+  switchBranch: (branch: BranchItem) => void;
   isLoading: boolean;
-  activeCompany: string;
-  activeBranch: string;
-  setActiveCompany: (code: string) => void;
-  setActiveBranch: (code: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   setUser: () => {},
+  switchCompany: () => {},
+  switchBranch: () => {},
   isLoading: true,
-  activeCompany: "",
-  activeBranch: "",
-  setActiveCompany: () => {},
-  setActiveBranch: () => {},
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUserState] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeCompany, setActiveCompanyState] = useState<string>("");
-  const [activeBranch, setActiveBranchState] = useState<string>("");
 
   useEffect(() => {
     const stored = localStorage.getItem("lms_user");
     if (stored) {
       try {
-        const u: User = JSON.parse(stored);
-        setUser(u);
-        const savedCo = localStorage.getItem("lms_active_company");
-        const savedBr = localStorage.getItem("lms_active_branch");
-        setActiveCompanyState(savedCo ?? u.company_list?.[0]?.code ?? "");
-        setActiveBranchState(savedBr ?? u.branch_list?.[0]?.code ?? "");
+        setUserState(JSON.parse(stored));
       } catch {
         localStorage.removeItem("lms_user");
       }
@@ -46,23 +35,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(false);
   }, []);
 
-  const setActiveCompany = useCallback((code: string) => {
-    setActiveCompanyState(code);
-    localStorage.setItem("lms_active_company", code);
-  }, []);
+  function setUser(u: User | null) {
+    setUserState(u);
+    if (u) {
+      localStorage.setItem("lms_user", JSON.stringify(u));
+    }
+  }
 
-  const setActiveBranch = useCallback((code: string) => {
-    setActiveBranchState(code);
-    localStorage.setItem("lms_active_branch", code);
-  }, []);
+  function switchCompany(company: CompanyItem) {
+    if (!user) return;
+    const updated = { ...user, selected_company: company };
+    setUserState(updated);
+    localStorage.setItem("lms_user", JSON.stringify(updated));
+  }
 
-  const value = useMemo(
-    () => ({ user, setUser, isLoading, activeCompany, activeBranch, setActiveCompany, setActiveBranch }),
-    [user, isLoading, activeCompany, activeBranch, setActiveCompany, setActiveBranch]
-  );
+  function switchBranch(branch: BranchItem) {
+    if (!user) return;
+    const updated = { ...user, selected_branch: branch };
+    setUserState(updated);
+    localStorage.setItem("lms_user", JSON.stringify(updated));
+  }
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ user, setUser, switchCompany, switchBranch, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

@@ -20,6 +20,7 @@ export interface LoginResponse {
   face_registered: boolean;
   hr_admin: boolean;
   has_self_service: boolean;
+  has_employee_features: boolean;
   allowed_companies: string[];
   allowed_branches: string[];
   company_list: CompanyItem[];
@@ -31,9 +32,11 @@ export interface User {
   emp_name: string;
   face_registered: boolean;
   hr_admin: boolean;
-  has_self_service?: boolean;
-  allowed_companies?: string[];
-  allowed_branches?: string[];
-  company_list?: CompanyItem[];
-  branch_list?: BranchItem[];
+  has_employee_features: boolean;
+  allowed_companies: string[];
+  allowed_branches: string[];
+  company_list: CompanyItem[];
+  branch_list: BranchItem[];
+  selected_company: CompanyItem | null;
+  selected_branch: BranchItem | null;
 }

@@ -12,7 +12,6 @@ import {
   ClipboardList,
   Clock,
   User,
-  Users,
   UserCog,
   Briefcase,
   LogOut,
@@ -20,10 +19,12 @@ import {
   Menu,
   Building2,
   MapPin,
+  ChevronDown,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { CompanyItem, BranchItem } from "@/models/auth";
 
-const selfServiceItems = [
+const employeeNavItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/leave/apply", label: "Apply Leave", icon: CalendarPlus },
   { href: "/leave/status", label: "Leave Status", icon: ClipboardList },
@@ -31,33 +32,96 @@ const selfServiceItems = [
   { href: "/profile", label: "Profile", icon: User },
 ];
 
-const hrItems = [
+const hrNavItems = [
   { href: "/hrms", label: "HRMS", icon: UserCog },
   { href: "/recruitment", label: "Recruitment", icon: Briefcase },
 ];
 
+function SwitcherDropdown<T extends { code: string; name: string }>({
+  items,
+  selected,
+  onSelect,
+  icon: Icon,
+  collapsed,
+}: {
+  items: T[];
+  selected: T | null;
+  onSelect: (item: T) => void;
+  icon: React.ElementType;
+  collapsed: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  if (items.length === 0) return null;
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => items.length > 1 && setOpen(!open)}
+        className={cn(
+          "flex items-center gap-2 w-full text-left px-2 py-1.5 rounded-lg transition-colors text-xs",
+          items.length > 1
+            ? "hover:bg-gray-100 cursor-pointer"
+            : "cursor-default",
+          collapsed && "justify-center"
+        )}
+        title={selected?.name ?? ""}
+      >
+        <Icon className="h-3.5 w-3.5 text-gray-400 shrink-0" />
+        {!collapsed && (
+          <>
+            <span className="text-gray-600 truncate flex-1">{selected?.name ?? "—"}</span>
+            {items.length > 1 && (
+              <ChevronDown className={cn("h-3 w-3 text-gray-400 shrink-0 transition-transform", open && "rotate-180")} />
+            )}
+          </>
+        )}
+      </button>
+
+      {open && !collapsed && (
+        <div className="absolute left-0 top-full mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
+          {items.map((item) => (
+            <button
+              key={item.code}
+              onClick={() => { onSelect(item); setOpen(false); }}
+              className={cn(
+                "w-full text-left px-3 py-2 text-xs hover:bg-indigo-50 hover:text-indigo-700 transition-colors",
+                selected?.code === item.code && "bg-indigo-50 text-indigo-700 font-medium"
+              )}
+            >
+              {item.name}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function Sidebar() {
   const pathname = usePathname();
-  const { user, activeCompany, activeBranch, setActiveCompany, setActiveBranch } = useAuth();
+  const { user, switchCompany, switchBranch } = useAuth();
   const { handleLogout } = useAuthController();
   const [collapsed, setCollapsed] = useState(false);
 
-  // SEC_USERNAME users get HR items; employees with self-service get self-service items
-  const showSelfService = user?.has_self_service !== false;
-  const showHR = !!user?.hr_admin;
+  const showEmployeeNav = user?.has_employee_features !== false;
   const navItems = [
-    ...(showSelfService ? selfServiceItems : []),
-    ...(showHR ? hrItems : []),
+    ...(showEmployeeNav ? employeeNavItems : []),
+    ...(user?.hr_admin ? hrNavItems : []),
   ];
-
-  const activeCompanyName = user?.company_list?.find(c => c.code === activeCompany)?.name
-    ?? user?.company_list?.[0]?.name ?? "";
-  const activeBranchName = user?.branch_list?.find(b => b.code === activeBranch)?.name
-    ?? user?.branch_list?.[0]?.name ?? "";
 
   return (
     <>
-      {/* Mobile overlay */}
+      {/* Mobile overlay button */}
       <button
         onClick={() => setCollapsed(!collapsed)}
         className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-xl shadow-md"
@@ -102,83 +166,43 @@ export function Sidebar() {
           </button>
         </div>
 
-        {/* User info */}
-        <div className={cn("px-4 py-4 border-b border-gray-100", collapsed && "px-2")}>
+        {/* User info + company/branch */}
+        <div className={cn("px-4 py-3 border-b border-gray-100 space-y-1", collapsed && "px-2")}>
+          {/* Avatar + name */}
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-linear-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-semibold text-sm shrink-0">
-              {user?.emp_name?.charAt(0) || "U"}
+              {user?.emp_name?.charAt(0)?.toUpperCase() || "U"}
             </div>
             {!collapsed && (
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-gray-900 truncate">
                   {user?.emp_name || "User"}
                 </p>
-                <p className="text-xs text-gray-500">
-                  {showHR ? "HR Admin" : "Employee"} · {user?.card_no}
-                </p>
+                <p className="text-xs text-gray-400">ID: {user?.card_no}</p>
               </div>
             )}
           </div>
 
-          {/* Company / Branch switcher — HR admins only */}
-          {!collapsed && showHR && (
-            <div className="mt-3 space-y-2 pt-3 border-t border-gray-100">
-              {(user?.company_list?.length ?? 0) > 0 && (
-                <div>
-                  <p className="flex items-center gap-1 text-xs text-gray-400 font-medium uppercase tracking-wide mb-1">
-                    <Building2 className="h-3 w-3" /> Company
-                  </p>
-                  {(user?.company_list?.length ?? 0) > 1 ? (
-                    <select
-                      value={activeCompany}
-                      onChange={(e) => setActiveCompany(e.target.value)}
-                      className="w-full text-xs bg-gray-50 border border-gray-200 rounded-lg px-2 py-1.5 text-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-300"
-                    >
-                      {user?.company_list?.map((c) => (
-                        <option key={c.code} value={c.code}>{c.name}</option>
-                      ))}
-                    </select>
-                  ) : (
-                    <p className="text-xs font-medium text-gray-700 truncate">{activeCompanyName}</p>
-                  )}
-                </div>
-              )}
-
-              {(user?.branch_list?.length ?? 0) > 0 && (
-                <div>
-                  <p className="flex items-center gap-1 text-xs text-gray-400 font-medium uppercase tracking-wide mb-1">
-                    <MapPin className="h-3 w-3" /> Branch
-                  </p>
-                  {(user?.branch_list?.length ?? 0) > 1 ? (
-                    <select
-                      value={activeBranch}
-                      onChange={(e) => setActiveBranch(e.target.value)}
-                      className="w-full text-xs bg-gray-50 border border-gray-200 rounded-lg px-2 py-1.5 text-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-300"
-                    >
-                      {user?.branch_list?.map((b) => (
-                        <option key={b.code} value={b.code}>{b.name}</option>
-                      ))}
-                    </select>
-                  ) : (
-                    <p className="text-xs font-medium text-gray-700 truncate">{activeBranchName}</p>
-                  )}
-                </div>
-              )}
-            </div>
+          {/* Company switcher */}
+          {(user?.company_list?.length ?? 0) > 0 && (
+            <SwitcherDropdown<CompanyItem>
+              items={user!.company_list}
+              selected={user!.selected_company}
+              onSelect={switchCompany}
+              icon={Building2}
+              collapsed={collapsed}
+            />
           )}
 
-          {/* Collapsed state — show active company/branch as icons */}
-          {collapsed && showHR && activeCompanyName && (
-            <div className="mt-3 flex flex-col items-center gap-1">
-              <div title={activeCompanyName} className="p-1">
-                <Building2 className="h-4 w-4 text-indigo-400" />
-              </div>
-              {activeBranchName && (
-                <div title={activeBranchName} className="p-1">
-                  <MapPin className="h-4 w-4 text-purple-400" />
-                </div>
-              )}
-            </div>
+          {/* Branch switcher */}
+          {(user?.branch_list?.length ?? 0) > 0 && (
+            <SwitcherDropdown<BranchItem>
+              items={user!.branch_list}
+              selected={user!.selected_branch}
+              onSelect={switchBranch}
+              icon={MapPin}
+              collapsed={collapsed}
+            />
           )}
         </div>
 
