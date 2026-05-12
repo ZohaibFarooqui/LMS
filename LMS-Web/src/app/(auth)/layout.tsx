@@ -20,7 +20,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       return;
     }
     // SEC_USERNAME users without an employee profile can't access employee pages
-    if (user.has_employee_features === false) {
+    // Use !user.has_employee_features to also catch undefined (old localStorage entries)
+    if (!user.has_employee_features) {
       const isEmployeePage = EMPLOYEE_ONLY_ROUTES.some((r) => pathname.startsWith(r));
       if (isEmployeePage) router.push("/hrms");
     }
