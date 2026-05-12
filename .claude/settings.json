@@ -14,7 +14,19 @@
       "PowerShell(& \"C:\\\\Erp_Systems\\\\HRMS_LMS_APP\\\\attendance_app\\(LMS\\)\\\\LMS-Backend\\\\face_rec\\\\venv310\\\\Scripts\\\\python.exe\" -c \"import hashlib; print\\(hashlib.md5\\('ABCD1234'.encode\\(\\)\\).hexdigest\\(\\).upper\\(\\)\\)\")",
       "PowerShell(& \"C:\\\\Erp_Systems\\\\HRMS_LMS_APP\\\\attendance_app\\(LMS\\)\\\\LMS-Backend\\\\face_rec\\\\venv310\\\\Scripts\\\\python.exe\" \"C:\\\\Erp_Systems\\\\HRMS_LMS_APP\\\\attendance_app\\(LMS\\)\\\\update_sec_pwd.py\")",
       "PowerShell(& \"C:\\\\Erp_Systems\\\\HRMS_LMS_APP\\\\attendance_app\\(LMS\\)\\\\LMS-Backend\\\\face_rec\\\\venv310\\\\Scripts\\\\python.exe\" \"C:\\\\Erp_Systems\\\\HRMS_LMS_APP\\\\attendance_app\\(LMS\\)\\\\test_auth.py\")",
-      "Read(//c/wamp64/bin/apache/**)"
+      "Read(//c/wamp64/bin/apache/**)",
+      "Bash(ls -la \"d:\\\\LMS\\\\\" 2>&1)",
+      "Read(//d//**)",
+      "PowerShell(Get-ChildItem -Path \"d:\\\\LMS\\\\LMS-Backend\" | ForEach-Object { $_.Name })",
+      "PowerShell(Get-ChildItem -Path \"d:\\\\LMS\\\\LMS-Backend\\\\core\" | ForEach-Object { $_.Name })",
+      "Bash(copy /Y \"d:\\\\LMS\\\\LMS-Web\\\\src\\\\context\\\\AuthContext.tsx\" \"d:\\\\LMS\\\\LMS_WEB\\\\src\\\\context\\\\AuthContext.tsx\")",
+      "Bash(copy /Y \"d:\\\\LMS\\\\LMS-Web\\\\src\\\\controllers\\\\useHRMSController.ts\" \"d:\\\\LMS\\\\LMS_WEB\\\\src\\\\controllers\\\\useHRMSController.ts\")",
+      "Bash(copy /Y \"d:\\\\LMS\\\\LMS-Web\\\\src\\\\components\\\\layout\\\\Sidebar.tsx\" \"d:\\\\LMS\\\\LMS_WEB\\\\src\\\\components\\\\layout\\\\Sidebar.tsx\")",
+      "PowerShell(Copy-Item \"d:\\\\LMS\\\\LMS-Web\\\\src\\\\context\\\\AuthContext.tsx\" \"d:\\\\LMS\\\\LMS_WEB\\\\src\\\\context\\\\AuthContext.tsx\" -Force)",
+      "PowerShell(Copy-Item \"d:\\\\LMS\\\\LMS-Web\\\\src\\\\controllers\\\\useHRMSController.ts\" \"d:\\\\LMS\\\\LMS_WEB\\\\src\\\\controllers\\\\useHRMSController.ts\" -Force)",
+      "PowerShell(Copy-Item \"d:\\\\LMS\\\\LMS-Web\\\\src\\\\components\\\\layout\\\\Sidebar.tsx\" \"d:\\\\LMS\\\\LMS_WEB\\\\src\\\\components\\\\layout\\\\Sidebar.tsx\" -Force)",
+      "Bash(git restore *)",
+      "Bash(git ls-remote *)"
     ],
     "additionalDirectories": [
       "C:\\Erp_Systems\\HRMS_LMS_APP\\attendance_app(LMS)"

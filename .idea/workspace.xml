@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="7b0d2df3-c771-4311-99fb-508ff6183e9c" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/LMS_APP/android/app/src/main/res/mipmap-hdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/android/app/src/main/res/mipmap-hdpi/ic_launcher.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/android/app/src/main/res/mipmap-mdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/android/app/src/main/res/mipmap-mdpi/ic_launcher.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/docs/API_MAPPING_SHEET.md" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/docs/API_MAPPING_SHEET.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/ios/Runner.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/ios/Runner.xcodeproj/project.pbxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/app.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/app.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/assets/images/YDC-HD.png" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/assets/images/YDC-HD.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/assets/images/login-bgg.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/core/config/app_config.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/core/config/app_config.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/core/network/dio_client.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/core/network/dio_client.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/core/network/mock_api_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/core/network/mock_api_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/core/services/attendance_validation_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/core/services/attendance_validation_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/data/datasources/lms_local_data_source.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/data/datasources/lms_local_data_source.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/data/datasources/lms_remote_data_source.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/data/datasources/lms_remote_data_source.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/di/service_locator.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/di/service_locator.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/attendance/data/datasources/attendance_remote_data_source.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/attendance/data/datasources/attendance_remote_data_source.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/attendance/domain/entities/attendance_summary.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/attendance/domain/entities/attendance_summary.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/attendance/presentation/bloc/attendance_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/attendance/presentation/bloc/attendance_bloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/attendance/presentation/bloc/attendance_event.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/attendance/presentation/bloc/attendance_event.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/attendance/presentation/bloc/attendance_state.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/attendance/presentation/bloc/attendance_state.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/attendance/presentation/bloc/biometric_attendance_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/attendance/presentation/bloc/biometric_attendance_bloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/attendance/presentation/pages/attendance_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/attendance/presentation/pages/attendance_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/attendance/presentation/pages/biometric_attendance_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/attendance/presentation/pages/biometric_attendance_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/attendance/presentation/widgets/attendance_calendar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/attendance/presentation/widgets/attendance_calendar.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/authentication/data/datasources/auth_remote_data_source.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/authentication/data/datasources/auth_remote_data_source.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/authentication/presentation/pages/login_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/authentication/presentation/pages/login_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/authentication/presentation/widgets/glass_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/authentication/presentation/widgets/glass_card.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/dashboard/data/datasources/dashboard_remote_data_source.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/dashboard/data/datasources/dashboard_remote_data_source.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/dashboard/data/repositories/dashboard_repository_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/dashboard/data/repositories/dashboard_repository_impl.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/dashboard/presentation/pages/dashboard_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/dashboard/presentation/pages/dashboard_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/face_auth/data/datasources/face_remote_datasource.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/face_auth/data/datasources/face_remote_datasource.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/face_auth/data/models/face_register_response_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/face_auth/data/models/face_register_response_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/face_auth/data/models/face_status_response_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/face_auth/data/models/face_status_response_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/face_auth/data/repositories/face_repository_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/face_auth/data/repositories/face_repository_impl.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/face_auth/domain/repositories/face_repository.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/face_auth/domain/repositories/face_repository.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/face_auth/presentation/bloc/face_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/face_auth/presentation/bloc/face_bloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/face_verification/presentation/bloc/face_verification_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/face_verification/presentation/bloc/face_verification_bloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/face_verification/presentation/pages/face_enrollment_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/face_verification/presentation/pages/face_enrollment_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/face_verification/presentation/pages/face_verification_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/face_verification/presentation/pages/face_verification_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/leaves/data/datasources/leave_remote_data_source.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/leaves/data/datasources/leave_remote_data_source.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/leaves/data/repositories/leave_repository_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/leaves/data/repositories/leave_repository_impl.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/leaves/domain/repositories/leave_repository.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/leaves/domain/repositories/leave_repository.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/leaves/domain/usecases/submit_leave_request_usecase.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/leaves/domain/usecases/submit_leave_request_usecase.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/leaves/presentation/bloc/leave_application/leave_application_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/leaves/presentation/bloc/leave_application/leave_application_bloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/leaves/presentation/bloc/leave_application/leave_application_event.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/leaves/presentation/bloc/leave_application/leave_application_event.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/leaves/presentation/bloc/leave_application/leave_application_state.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/leaves/presentation/bloc/leave_application/leave_application_state.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/leaves/presentation/pages/leave_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/leaves/presentation/pages/leave_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/profile/data/datasources/profile_remote_data_source.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/profile/data/datasources/profile_remote_data_source.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/profile/data/models/enhanced_profile_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/profile/data/models/enhanced_profile_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/profile/data/repositories/profile_repository_impl.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/profile/data/repositories/profile_repository_impl.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/profile/domain/entities/enhanced_profile_entity.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/profile/domain/entities/enhanced_profile_entity.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/features/profile/presentation/pages/enhanced_profile_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/features/profile/presentation/pages/enhanced_profile_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/presentation/home/home_shell.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/presentation/home/home_shell.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/presentation/splash/splash_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/presentation/splash/splash_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/shared/widgets/app_button.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/shared/widgets/app_button.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/shared/widgets/app_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/shared/widgets/app_card.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/shared/widgets/empty_state.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/shared/widgets/empty_state.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/shared/widgets/key_value_row.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/shared/widgets/key_value_row.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/shared/widgets/loading_indicator.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/shared/widgets/loading_indicator.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/lib/shared/widgets/status_badge.dart" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/lib/shared/widgets/status_badge.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LMS_APP/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/LMS_APP/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/models/face_models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/models/face_models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/repositories/attendance_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/repositories/attendance_repository.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/repositories/face_repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/repositories/face_repository.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routers/face_router.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routers/face_router.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/services/attendance_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/services/attendance_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/services/face_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/services/face_service.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/LMS_APP" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="36KHPAIdKzGzMINtqaYs41NnvZe" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;waiting__for__backend&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/LMS&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;AndroidSdkUpdater&quot;
+  }
+}</component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7b0d2df3-c771-4311-99fb-508ff6183e9c" name="Changes" comment="" />
+      <created>1764748318094</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1764748318094</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
