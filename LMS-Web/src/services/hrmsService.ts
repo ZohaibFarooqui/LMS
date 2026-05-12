@@ -42,19 +42,27 @@ export async function updateHRMSEmployee(
 
 export async function listHRMSEmployees(
   adminCardNo: string,
-  status?: string
+  status?: string,
+  compc?: string,
+  brnch?: string,
 ): Promise<{ items: HRMSSearchResult[] }> {
   const params = new URLSearchParams({ admin_card_no: adminCardNo });
   if (status) params.set("status", status);
+  if (compc)  params.set("compc", compc);
+  if (brnch)  params.set("brnch", brnch);
   return apiRequest(`/hrms/employees?${params.toString()}`);
 }
 
 export async function fetchHRDashboard(
   adminCardNo: string,
-  date?: string
+  date?: string,
+  compc?: string,
+  brnch?: string,
 ): Promise<HRDashboardStats> {
   const params = new URLSearchParams({ admin_card_no: adminCardNo });
-  if (date) params.set("date", date);
+  if (date)  params.set("date", date);
+  if (compc) params.set("compc", compc);
+  if (brnch) params.set("brnch", brnch);
   return apiRequest<HRDashboardStats>(`/hrms/dashboard?${params.toString()}`);
 }
 
@@ -74,8 +82,15 @@ export async function updateLocationTracking(
   });
 }
 
-export async function fetchHRAnalytics(adminCardNo: string, date?: string): Promise<HRAnalytics> {
+export async function fetchHRAnalytics(
+  adminCardNo: string,
+  date?: string,
+  compc?: string,
+  brnch?: string,
+): Promise<HRAnalytics> {
   const params = new URLSearchParams({ admin_card_no: adminCardNo });
-  if (date) params.set("date", date);
+  if (date)  params.set("date", date);
+  if (compc) params.set("compc", compc);
+  if (brnch) params.set("brnch", brnch);
   return apiRequest<HRAnalytics>(`/hrms/dashboard/analytics?${params.toString()}`);
 }

@@ -18,28 +18,8 @@ export interface AttendanceDateRange {
   to: string;
 }
 
-function applyCompanyBranchFilter(
-  list: HRMSSearchResult[],
-  company: string,
-  branch: string
-): HRMSSearchResult[] {
-  return list.filter((e) => {
-    if (company && e.unit_id != null && String(e.unit_id) !== company) return false;
-    if (branch && e.location != null && String(e.location) !== branch) return false;
-    return true;
-  });
-}
-
 export function useHRMSController() {
   const { user, activeCompany, activeBranch } = useAuth();
-
-  // Re-filter displayed list whenever the selected company/branch changes
-  useEffect(() => {
-    if (allEmployees.length === 0) return;
-    setEmployees(applyCompanyBranchFilter(allEmployees, activeCompany, activeBranch));
-    setSearchQuery("");
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeCompany, activeBranch]);
 
   // Employee list state
   const [employees, setEmployees] = useState<HRMSSearchResult[]>([]);
@@ -70,16 +50,21 @@ export function useHRMSController() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  // ---- Load all employees (called on mount & status filter change) ----
+  // ---- Load all employees (server already filters by selected company/branch) ----
   const loadEmployees = useCallback(async (status?: string) => {
     if (!user) return;
     setLoading(true);
     setError(null);
     try {
-      const res = await listHRMSEmployees(user.card_no, status || undefined);
+      const res = await listHRMSEmployees(
+        user.card_no,
+        status || undefined,
+        activeCompany || undefined,
+        activeBranch || undefined,
+      );
       const items = res.items || [];
       setAllEmployees(items);
-      setEmployees(applyCompanyBranchFilter(items, activeCompany, activeBranch));
+      setEmployees(items);
       setSearchQuery("");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load employees");
@@ -88,17 +73,23 @@ export function useHRMSController() {
     }
   }, [user, activeCompany, activeBranch]);
 
-  // ---- Client-side search filter ----
+  // ---- Reload from server when the active company/branch changes ----
+  useEffect(() => {
+    if (!user) return;
+    loadEmployees(statusFilter || undefined);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeCompany, activeBranch]);
+
+  // ---- Client-side text search over the (already server-filtered) list ----
   const filterByQuery = useCallback((query: string) => {
     setSearchQuery(query);
-    const base = applyCompanyBranchFilter(allEmployees, activeCompany, activeBranch);
     if (!query.trim()) {
-      setEmployees(base);
+      setEmployees(allEmployees);
       return;
     }
     const q = query.toLowerCase();
     setEmployees(
-      base.filter(
+      allEmployees.filter(
         (e) =>
           e.name?.toLowerCase().includes(q) ||
           e.empcode?.toLowerCase().includes(q) ||
@@ -107,7 +98,7 @@ export function useHRMSController() {
           e.email?.toLowerCase().includes(q)
       )
     );
-  }, [allEmployees, activeCompany, activeBranch]);
+  }, [allEmployees]);
 
   // ---- Server search (used when list is not loaded / fallback) ----
   async function search(query: string) {
@@ -164,7 +155,12 @@ export function useHRMSController() {
       const res = await updateHRMSEmployee(empcode, data, user.card_no);
       setSuccess(res.message || "Employee updated successfully");
       // Refresh the full list so updated name/fields are visible immediately
-      const listRes = await listHRMSEmployees(user.card_no, undefined);
+      const listRes = await listHRMSEmployees(
+        user.card_no,
+        undefined,
+        activeCompany || undefined,
+        activeBranch || undefined,
+      );
       const items = listRes.items || [];
       setAllEmployees(items);
       setEmployees(items);

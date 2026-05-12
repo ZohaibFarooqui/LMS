@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Plus, Check, Loader2, RefreshCw, Settings, Pencil, X } from "lucide-react";
 import { Spinner } from "@/components/ui/Spinner";
 import { Button } from "@/components/ui/Button";
+import { useAuth } from "@/context/AuthContext";
 import {
   fetchDepartments, fetchGrades, fetchDesignations, fetchShifts,
   fetchBloodGroups, fetchUnits, fetchLocations,
@@ -334,6 +335,7 @@ function LocationsTable({
 // ─── Main panel ───────────────────────────────────────────
 
 export function SetupPanel({ adminCardNo }: { adminCardNo: string }) {
+  const { activeCompany, activeBranch } = useAuth();
   const [tab, setTab] = useState<Tab>("departments");
 
   // Data
@@ -350,11 +352,11 @@ export function SetupPanel({ adminCardNo }: { adminCardNo: string }) {
     setLoading(true);
     try {
       switch (t) {
-        case "departments":  { const r = await fetchDepartments();  setDepts(r.items);  break; }
-        case "grades":       { const r = await fetchGrades();       setGrades(r.items); break; }
-        case "designations": { const r = await fetchDesignations(); setDesigs(r.items); break; }
-        case "shifts":       { const r = await fetchShifts();       setShifts(r.items); break; }
-        case "blood_groups": { const r = await fetchBloodGroups();  setBgs(r.items);    break; }
+        case "departments":  { const r = await fetchDepartments(activeCompany, activeBranch);  setDepts(r.items);  break; }
+        case "grades":       { const r = await fetchGrades(activeCompany, activeBranch);       setGrades(r.items); break; }
+        case "designations": { const r = await fetchDesignations(undefined, activeCompany, activeBranch); setDesigs(r.items); break; }
+        case "shifts":       { const r = await fetchShifts(activeCompany, activeBranch);       setShifts(r.items); break; }
+        case "blood_groups": { const r = await fetchBloodGroups(activeCompany, activeBranch);  setBgs(r.items);    break; }
         case "units":        { const r = await fetchUnits();        setUnits(r.items);  break; }
         case "locations":    { const r = await fetchLocations();    setLocs(r.items);   break; }
       }
@@ -363,7 +365,7 @@ export function SetupPanel({ adminCardNo }: { adminCardNo: string }) {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [activeCompany, activeBranch]);
 
   useEffect(() => { load(tab); }, [tab, load]);
 

@@ -19,7 +19,7 @@ function readHrViewPref(): boolean {
 }
 
 export function useDashboardController() {
-  const { user } = useAuth();
+  const { user, activeCompany, activeBranch } = useAuth();
   const [dashboard, setDashboard] = useState<DashboardData | null>(null);
   const [leaveBalances, setLeaveBalances] = useState<LeaveBalance[]>([]);
   const [attendanceSummary, setAttendanceSummary] = useState<AttendanceSummary | null>(null);
@@ -88,8 +88,8 @@ export function useDashboardController() {
       if (user.hr_admin) {
         try {
           const [stats, analytics] = await Promise.all([
-            fetchHRDashboard(user.card_no, qdate),
-            fetchHRAnalytics(user.card_no, qdate),
+            fetchHRDashboard(user.card_no, qdate, activeCompany || undefined, activeBranch || undefined),
+            fetchHRAnalytics(user.card_no, qdate, activeCompany || undefined, activeBranch || undefined),
           ]);
           setHrStats(stats);
           setHrAnalytics(analytics);
@@ -104,7 +104,15 @@ export function useDashboardController() {
       setInitialLoading(false);
       setRefreshing(false);
     }
-  }, [user]); // selectedDate read via ref — keeps callback stable
+  }, [user, activeCompany, activeBranch]); // selectedDate read via ref — keeps callback stable
+
+  // Reload HR sections when the selected company/branch changes
+  useEffect(() => {
+    if (!user?.hr_admin) return;
+    if (!hasLoadedRef.current) return;
+    loadDashboard();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeCompany, activeBranch]);
 
   const handleSetSelectedDate = useCallback((date: string) => {
     setSelectedDate(date);

@@ -11,13 +11,28 @@ export interface Religion        { code: string; label: string }
 export interface ReportingOfficer { empcode: string; name: string }
 export interface Location    { lcode: string; descr: string; sname: string; regioncode: string; city: string }
 
-export const fetchDepartments  = () => apiRequest<{ items: Department[]  }>("/reference/departments");
-export const fetchGrades       = () => apiRequest<{ items: Grade[]       }>("/reference/grades");
-export const fetchDesignations = (grade_cd?: string) =>
-  apiRequest<{ items: Designation[] }>(`/reference/designations${grade_cd ? `?grade_cd=${grade_cd}` : ""}`);
-export const fetchShifts       = () => apiRequest<{ items: Shift[]       }>("/reference/shifts");
-export const fetchBloodGroups  = () => apiRequest<{ items: BloodGroup[]  }>("/reference/blood-groups");
-export const fetchCadre        = () => apiRequest<{ items: Cadre[]       }>("/reference/cadre");
+function cbQuery(compc?: string, brnch?: string, extra = ""): string {
+  const parts: string[] = [];
+  if (compc) parts.push(`compc=${encodeURIComponent(compc)}`);
+  if (brnch) parts.push(`brnch=${encodeURIComponent(brnch)}`);
+  if (extra) parts.push(extra);
+  return parts.length ? `?${parts.join("&")}` : "";
+}
+
+export const fetchDepartments  = (compc?: string, brnch?: string) =>
+  apiRequest<{ items: Department[] }>(`/reference/departments${cbQuery(compc, brnch)}`);
+export const fetchGrades       = (compc?: string, brnch?: string) =>
+  apiRequest<{ items: Grade[] }>(`/reference/grades${cbQuery(compc, brnch)}`);
+export const fetchDesignations = (grade_cd?: string, compc?: string, brnch?: string) =>
+  apiRequest<{ items: Designation[] }>(
+    `/reference/designations${cbQuery(compc, brnch, grade_cd ? `grade_cd=${encodeURIComponent(grade_cd)}` : "")}`
+  );
+export const fetchShifts       = (compc?: string, brnch?: string) =>
+  apiRequest<{ items: Shift[] }>(`/reference/shifts${cbQuery(compc, brnch)}`);
+export const fetchBloodGroups  = (compc?: string, brnch?: string) =>
+  apiRequest<{ items: BloodGroup[] }>(`/reference/blood-groups${cbQuery(compc, brnch)}`);
+export const fetchCadre        = (compc?: string, brnch?: string) =>
+  apiRequest<{ items: Cadre[] }>(`/reference/cadre${cbQuery(compc, brnch)}`);
 export const fetchUnits              = () => apiRequest<{ items: Unit[]             }>("/reference/units");
 export const fetchReligions          = () => apiRequest<{ items: Religion[]         }>("/reference/religions");
 export const fetchReportingOfficers  = () => apiRequest<{ items: ReportingOfficer[] }>("/reference/reporting-officers");
