@@ -9,6 +9,7 @@ export interface Cadre       { pk: number; cadre: string }
 export interface Unit            { unit_id: number; unit_name: string }
 export interface Religion        { code: string; label: string }
 export interface ReportingOfficer { empcode: string; name: string }
+export interface Location    { lcode: string; descr: string; sname: string; regioncode: string; city: string }
 
 export const fetchDepartments  = () => apiRequest<{ items: Department[]  }>("/reference/departments");
 export const fetchGrades       = () => apiRequest<{ items: Grade[]       }>("/reference/grades");
@@ -20,6 +21,7 @@ export const fetchCadre        = () => apiRequest<{ items: Cadre[]       }>("/re
 export const fetchUnits              = () => apiRequest<{ items: Unit[]             }>("/reference/units");
 export const fetchReligions          = () => apiRequest<{ items: Religion[]         }>("/reference/religions");
 export const fetchReportingOfficers  = () => apiRequest<{ items: ReportingOfficer[] }>("/reference/reporting-officers");
+export const fetchLocations          = () => apiRequest<{ items: Location[]         }>("/reference/locations");
 
 const q = (adminCardNo: string) => `?admin_card_no=${encodeURIComponent(adminCardNo)}`;
 
@@ -43,3 +45,9 @@ export const addCadre       = (adminCardNo: string, cadre: string) =>
 
 export const addUnit        = (adminCardNo: string, unit_name: string) =>
   apiRequest<Unit>(`/reference/units${q(adminCardNo)}`, { method: "POST", body: { unit_name } });
+
+export const addLocation    = (adminCardNo: string, lcode: string, descr: string, sname: string, regioncode: string, city: string) =>
+  apiRequest<Location>(`/reference/locations${q(adminCardNo)}`, { method: "POST", body: { lcode, descr, sname, regioncode, city } });
+
+export const updateLocation = (adminCardNo: string, lcode: string, descr: string, sname: string, regioncode: string, city: string) =>
+  apiRequest<Location>(`/reference/locations/${encodeURIComponent(lcode)}${q(adminCardNo)}`, { method: "PUT", body: { lcode, descr, sname, regioncode, city } });

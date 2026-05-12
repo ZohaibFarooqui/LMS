@@ -35,7 +35,10 @@ import {
   Calendar,
   MapPin,
   Settings,
+  Navigation,
+  FileText,
 } from "lucide-react";
+import { updateLocationTracking } from "@/services/hrmsService";
 import { LocationPanel } from "./LocationPanel";
 import { SetupPanel } from "./SetupPanel";
 import { DynamicSelect } from "@/components/ui/DynamicSelect";
@@ -253,6 +256,7 @@ export default function HRMSPage() {
   const ctrl = useHRMSController();
 
   const [section, setSection] = useState<"employees" | "locations" | "setup">("employees");
+  const [locationFocusCard, setLocationFocusCard] = useState<string | undefined>();
   const [view, setView] = useState<View>("list");
   const [activeTab, setActiveTab] = useState<StatusTab>("");
   const [localQuery, setLocalQuery] = useState("");
@@ -344,7 +348,7 @@ export default function HRMSPage() {
     return (
       <div className="animate-fade-in">
         <SectionNav />
-        <LocationPanel adminCardNo={user.card_no} />
+        <LocationPanel adminCardNo={user.card_no} focusCardNo={locationFocusCard} />
       </div>
     );
   }
@@ -358,6 +362,11 @@ export default function HRMSPage() {
   }
 
   // ---- Navigation helpers ----
+
+  function viewLocation(cardNo: string) {
+    setLocationFocusCard(cardNo || undefined);
+    setSection("locations");
+  }
 
   function goList() {
     ctrl.clearSelection();
@@ -422,6 +431,8 @@ export default function HRMSPage() {
       gross: e.gross ?? undefined,
       shift: e.shift || "",
       w_hour: e.w_hour ?? undefined,
+      track_location: e.track_location || "N",
+      track_location_hr: e.track_location_hr ?? 2,
     });
   }
 
@@ -609,6 +620,7 @@ export default function HRMSPage() {
                         "Dept",
                         "Mobile",
                         "Status",
+                        "Tracking",
                         "Actions",
                       ].map((h) => (
                         <th
@@ -659,7 +671,23 @@ export default function HRMSPage() {
                           <StatusBadge status={emp.status} />
                         </td>
                         <td className="px-4 py-3">
-                          <div className="flex items-center gap-2">
+                          <div className="flex flex-col gap-1">
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium w-fit ${
+                              emp.track_location === "Y"
+                                ? "bg-emerald-50 text-emerald-700"
+                                : "bg-gray-100 text-gray-500"
+                            }`}>
+                              {emp.track_location === "Y" ? "Enabled" : "Disabled"}
+                            </span>
+                            {emp.track_location === "Y" && emp.track_location_hr && (
+                              <span className="text-xs text-gray-400">
+                                every {emp.track_location_hr}h
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2 flex-wrap">
                             <Button
                               variant="secondary"
                               size="sm"
@@ -676,6 +704,16 @@ export default function HRMSPage() {
                               <BarChart2 className="h-3.5 w-3.5 mr-1" />
                               Report
                             </Button>
+                            {(emp.card_no || emp.atdtcard) && (
+                              <Button
+                                variant="secondary"
+                                size="sm"
+                                onClick={() => viewLocation(emp.card_no || emp.atdtcard || "")}
+                              >
+                                <Navigation className="h-3.5 w-3.5 mr-1" />
+                                Location
+                              </Button>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -846,6 +884,24 @@ export default function HRMSPage() {
                 summary,
                 reportRange.from,
                 reportRange.to,
+                "view",
+              )
+            }
+          >
+            <FileText className="h-4 w-4 mr-1.5" />
+            View as PDF
+          </Button>
+          <Button
+            variant="secondary"
+            disabled={records.length === 0}
+            onClick={() =>
+              printTimesheetWindow(
+                emp ?? {},
+                records,
+                summary,
+                reportRange.from,
+                reportRange.to,
+                "print",
               )
             }
           >
@@ -1316,6 +1372,53 @@ export default function HRMSPage() {
                   )
                 }
               />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Location Tracking */}
+        <Card className="mb-6">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <MapPin className="h-5 w-5 text-indigo-500" />
+              <h2 className="text-lg font-semibold text-gray-900">Location Tracking</h2>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <Select
+                label="Track Location"
+                options={[
+                  { value: "N", label: "Disabled" },
+                  { value: "Y", label: "Enabled" },
+                ]}
+                value={form.track_location || "N"}
+                onChange={(e) => updateField("track_location", e.target.value)}
+              />
+              <Input
+                label="Tracking Interval (hours)"
+                type="number"
+                value={form.track_location_hr?.toString() || "2"}
+                onChange={(e) =>
+                  updateField(
+                    "track_location_hr",
+                    e.target.value ? parseInt(e.target.value) : 2,
+                  )
+                }
+                placeholder="1–24 hours"
+              />
+              {isEdit && ctrl.selectedEmployee?.atdtcard && (
+                <div className="flex items-end">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => viewLocation(ctrl.selectedEmployee?.atdtcard ?? "")}
+                  >
+                    <Navigation className="h-4 w-4 mr-1.5" />
+                    View Location History
+                  </Button>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

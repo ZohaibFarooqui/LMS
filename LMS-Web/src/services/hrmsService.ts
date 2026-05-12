@@ -58,6 +58,22 @@ export async function fetchHRDashboard(
   return apiRequest<HRDashboardStats>(`/hrms/dashboard?${params.toString()}`);
 }
 
+export async function updateLocationTracking(
+  empcode: string,
+  trackLocation: "Y" | "N",
+  trackLocationHr: number,
+  adminCardNo: string
+): Promise<{ success: boolean; message: string }> {
+  const params = new URLSearchParams({
+    track_location: trackLocation,
+    track_location_hr: String(trackLocationHr),
+    admin_card_no: adminCardNo,
+  });
+  return apiRequest(`/location-tracking/settings/${encodeURIComponent(empcode)}/update?${params.toString()}`, {
+    method: "POST",
+  });
+}
+
 export async function fetchHRAnalytics(adminCardNo: string, date?: string): Promise<HRAnalytics> {
   const params = new URLSearchParams({ admin_card_no: adminCardNo });
   if (date) params.set("date", date);

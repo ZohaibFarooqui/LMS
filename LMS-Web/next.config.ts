@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ["apps.d-tech.com.pk", "10.0.0.120", "http://163.61.91.221:8001", "https://hrms.sysnovix.com/"],
+  // Disable React Strict Mode — it double-invokes renders in development,
+  // which causes components to flash and makes state updates appear to loop.
+  reactStrictMode: false,
+
   async rewrites() {
     // BACKEND_URL is the server-side proxy target — must be a locally
     // reachable address (not a public domain that loops through NAT).

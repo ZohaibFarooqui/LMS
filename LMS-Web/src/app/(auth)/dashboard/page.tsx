@@ -33,6 +33,7 @@ export default function DashboardPage() {
     hrView,
     setHrView,
     loading,
+    refreshing,
     error,
     selectedDate,
     setSelectedDate,
@@ -60,6 +61,7 @@ export default function DashboardPage() {
         onSwitch={() => setHrView(false)}
         selectedDate={selectedDate}
         onDateChange={setSelectedDate}
+        refreshing={refreshing}
       />
     );
   }

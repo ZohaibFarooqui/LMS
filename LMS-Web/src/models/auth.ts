@@ -3,12 +3,27 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface CompanyItem {
+  code: string;
+  name: string;
+}
+
+export interface BranchItem {
+  code: string;
+  name: string;
+}
+
 export interface LoginResponse {
   status: string;
   card_no: string;
   emp_name: string;
   face_registered: boolean;
   hr_admin: boolean;
+  has_self_service: boolean;
+  allowed_companies: string[];
+  allowed_branches: string[];
+  company_list: CompanyItem[];
+  branch_list: BranchItem[];
 }
 
 export interface User {
@@ -16,4 +31,9 @@ export interface User {
   emp_name: string;
   face_registered: boolean;
   hr_admin: boolean;
+  has_self_service?: boolean;
+  allowed_companies?: string[];
+  allowed_branches?: string[];
+  company_list?: CompanyItem[];
+  branch_list?: BranchItem[];
 }

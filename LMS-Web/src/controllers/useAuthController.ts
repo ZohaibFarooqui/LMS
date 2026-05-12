@@ -22,6 +22,11 @@ export function useAuthController() {
           emp_name: response.emp_name,
           face_registered: response.face_registered,
           hr_admin: response.hr_admin,
+          has_self_service: response.has_self_service ?? true,
+          allowed_companies: response.allowed_companies ?? [],
+          allowed_branches: response.allowed_branches ?? [],
+          company_list: response.company_list ?? [],
+          branch_list: response.branch_list ?? [],
         };
         setUser(user);
         localStorage.setItem("lms_user", JSON.stringify(user));

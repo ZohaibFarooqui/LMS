@@ -49,6 +49,7 @@ export function printTimesheetWindow(
   summary: AttendanceSummary | null,
   fromDate: string,
   toDate: string,
+  mode: "print" | "view" = "print",
 ) {
   const runTime = new Date().toLocaleString("en-US", {
     year: "numeric", month: "long", day: "numeric",
@@ -295,12 +296,12 @@ export function printTimesheetWindow(
   </div>
 
 </div>
-<script>
+${mode === "print" ? `<script>
   window.onload = function() {
     window.print();
     setTimeout(function() { window.close(); }, 1000);
   };
-</script>
+</script>` : ""}
 </body>
 </html>`;
 

@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(& \"C:\\\\Program Files\\\\nodejs\\\\node.exe\" $pm2 list)",
+      "PowerShell($pm2 = \"C:\\\\Users\\\\Administrator\\\\AppData\\\\Local\\\\npm-cache\\\\_npx\\\\5f7878ce38f1eb13\\\\node_modules\\\\pm2\\\\bin\\\\pm2\")",
+      "Read(//c/ProgramData/**)",
+      "Read(//c/Erp_Systems/HRMS_LMS_APP/attendance_app\\(LMS\\)/**)",
+      "PowerShell(Get-WmiObject Win32_Process | Where-Object {$_.ProcessId -eq 14844} | Select-Object CommandLine | Format-List)",
+      "PowerShell($pm2bin = \"C:\\\\Users\\\\Administrator\\\\AppData\\\\Local\\\\npm-cache\\\\_npx\\\\5f7878ce38f1eb13\\\\node_modules\\\\pm2\\\\bin\\\\pm2\"; $env:PM2_HOME = \"C:\\\\Users\\\\Administrator\\\\.pm2\"; & \"C:\\\\Program Files\\\\nodejs\\\\node.exe\" $pm2bin list 2>&1)",
+      "PowerShell($proc = Get-WmiObject Win32_Process | Where-Object {$_.ProcessId -eq 12896}; $proc | Select-Object CommandLine, ExecutablePath | Format-List; $exec = [System.Diagnostics.Process]::GetProcessById\\(12896\\); Write-Host \"Modules:\" $exec.Modules[0].FileName)",
+      "PowerShell(& \"C:\\\\Program Files\\\\nodejs\\\\node.exe\" $pm2bin start \"C:\\\\Erp_Systems\\\\HRMS_LMS_APP\\\\attendance_app\\(LMS\\)\\\\ecosystem.config.js\" --only lms-mobile-backend 2>&1)",
+      "PowerShell($pm2bin = \"C:\\\\Users\\\\Administrator\\\\AppData\\\\Local\\\\npm-cache\\\\_npx\\\\5f7878ce38f1eb13\\\\node_modules\\\\pm2\\\\bin\\\\pm2\")",
+      "PowerShell(& \"C:\\\\Program Files\\\\nodejs\\\\node.exe\" $pm2bin list 2>&1)",
+      "PowerShell(& \"C:\\\\Erp_Systems\\\\HRMS_LMS_APP\\\\attendance_app\\(LMS\\)\\\\LMS-Backend\\\\face_rec\\\\venv310\\\\Scripts\\\\python.exe\" -c \"import hashlib; print\\(hashlib.md5\\('ABCD1234'.encode\\(\\)\\).hexdigest\\(\\).upper\\(\\)\\)\")",
+      "PowerShell(& \"C:\\\\Erp_Systems\\\\HRMS_LMS_APP\\\\attendance_app\\(LMS\\)\\\\LMS-Backend\\\\face_rec\\\\venv310\\\\Scripts\\\\python.exe\" \"C:\\\\Erp_Systems\\\\HRMS_LMS_APP\\\\attendance_app\\(LMS\\)\\\\update_sec_pwd.py\")",
+      "PowerShell(& \"C:\\\\Erp_Systems\\\\HRMS_LMS_APP\\\\attendance_app\\(LMS\\)\\\\LMS-Backend\\\\face_rec\\\\venv310\\\\Scripts\\\\python.exe\" \"C:\\\\Erp_Systems\\\\HRMS_LMS_APP\\\\attendance_app\\(LMS\\)\\\\test_auth.py\")",
+      "Read(//c/wamp64/bin/apache/**)"
+    ],
+    "additionalDirectories": [
+      "C:\\Erp_Systems\\HRMS_LMS_APP\\attendance_app(LMS)"
+    ]
+  }
+}

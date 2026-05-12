@@ -15,7 +15,10 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
     if (!isLoading && !user) {
       router.push("/");
     }
-  }, [user, isLoading, router]);
+    // router is intentionally excluded — it's a stable singleton in App Router
+    // but its reference identity can change on navigation, causing spurious re-runs
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, isLoading]);
 
   // Start location tracking when logged in; stop on logout / unmount
   useEffect(() => {

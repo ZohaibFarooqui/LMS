@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList,
@@ -173,13 +174,13 @@ function buildInsights(stats: HRDashboardStats, kpis: HRAnalytics["kpis"]) {
 
 // ─── Quick Actions ─────────────────────────────────────────
 const QUICK = [
-  { label: "Mark Attendance\nManually",    Icon: ClipboardCheck, bg: "bg-indigo-50",  ic: "text-indigo-600" },
-  { label: "Apply Leave\nfor Employee",    Icon: UserCog,        bg: "bg-emerald-50", ic: "text-emerald-600" },
-  { label: "Regularization\nRequest",     Icon: ClipboardList,  bg: "bg-purple-50",  ic: "text-purple-600" },
-  { label: "Attendance\nReport",           Icon: BarChart2,      bg: "bg-blue-50",    ic: "text-blue-600" },
-  { label: "Absence\nReport",             Icon: UserMinus,      bg: "bg-amber-50",   ic: "text-amber-600" },
-  { label: "Overtime\nReport",            Icon: AlarmClock,     bg: "bg-violet-50",  ic: "text-violet-600" },
-  { label: "Export\nData",               Icon: FileDown,       bg: "bg-teal-50",    ic: "text-teal-600" },
+  { label: "Mark Attendance\nManually",    Icon: ClipboardCheck, bg: "bg-indigo-50",  ic: "text-indigo-600",  href: "/hrms" },
+  { label: "Apply Leave\nfor Employee",    Icon: UserCog,        bg: "bg-emerald-50", ic: "text-emerald-600", href: "/leave" },
+  { label: "Regularization\nRequest",     Icon: ClipboardList,  bg: "bg-purple-50",  ic: "text-purple-600",  href: "/hrms" },
+  { label: "Attendance\nReport",           Icon: BarChart2,      bg: "bg-blue-50",    ic: "text-blue-600",    href: "/hrms" },
+  { label: "Absence\nReport",             Icon: UserMinus,      bg: "bg-amber-50",   ic: "text-amber-600",   href: "/hrms" },
+  { label: "Overtime\nReport",            Icon: AlarmClock,     bg: "bg-violet-50",  ic: "text-violet-600",  href: "/hrms" },
+  { label: "Export\nData",               Icon: FileDown,       bg: "bg-teal-50",    ic: "text-teal-600",    href: "/hrms" },
 ];
 
 // ─── Status badge ──────────────────────────────────────────
@@ -201,14 +202,16 @@ function StatusBadge({ status }: { status: string }) {
 // MAIN HR DASHBOARD
 // ══════════════════════════════════════════════════════════
 export function HRDashboard({
-  stats, analytics, onSwitch, selectedDate, onDateChange,
+  stats, analytics, onSwitch, selectedDate, onDateChange, refreshing = false,
 }: {
   stats: HRDashboardStats;
   analytics: HRAnalytics | null;
   onSwitch: () => void;
   selectedDate?: string;
   onDateChange?: (date: string) => void;
+  refreshing?: boolean;
 }) {
+  const router  = useRouter();
   const kpis    = analytics?.kpis;
   const daily14 = (analytics?.daily_attendance ?? []).slice(-14);
   const monthly = analytics?.monthly_attendance ?? [];
@@ -237,10 +240,8 @@ export function HRDashboard({
       color:   shiftColors[i] ?? G,
     }));
 
-  // Top absence reasons — fallback
-  const reasons = stats.top_reasons?.length
-    ? stats.top_reasons
-    : [{ reason: "Sick Leave", count: 45 }, { reason: "Personal", count: 25 }, { reason: "Emergency", count: 15 }, { reason: "Casual Leave", count: 10 }, { reason: "Other", count: 5 }];
+  // Top absence reasons — live data only, no fallback
+  const reasons = stats.top_reasons ?? [];
   const reasonTotal = reasons.reduce((s, r) => s + r.count, 0) || 1;
 
   // Dept totals
@@ -267,14 +268,22 @@ export function HRDashboard({
     <div className="space-y-4 animate-fade-in">
 
       {/* ══ HEADER ════════════════════════════════════════════ */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">HR Dashboard</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold text-white">HR Dashboard</h1>
+            {refreshing && (
+              <svg className="animate-spin h-4 w-4 text-indigo-500" viewBox="0 0 24 24" fill="none">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+              </svg>
+            )}
+          </div>
           <p className="text-xs text-gray-400">Organization-wide overview</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 flex-wrap justify-end">
           {/* Date picker */}
-          <label className="flex items-center gap-1.5 text-xs text-gray-500 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 cursor-pointer hover:bg-gray-100 transition-colors">
+          <label className="relative flex items-center gap-1.5 text-xs text-gray-500 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 cursor-pointer hover:bg-gray-100 transition-colors overflow-hidden">
             <CalendarDays className="h-3.5 w-3.5 shrink-0" />
             <span>{displayDate}</span>
             <input
@@ -282,24 +291,25 @@ export function HRDashboard({
               value={selectedDate ?? new Date().toISOString().split("T")[0]}
               max={new Date().toISOString().split("T")[0]}
               onChange={(e) => onDateChange?.(e.target.value)}
-              className="absolute opacity-0 w-0 h-0 pointer-events-none"
+              className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
             />
           </label>
           <button
             onClick={onSwitch}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors text-xs font-medium"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors text-xs font-medium whitespace-nowrap"
           >
             <ToggleRight className="h-4 w-4" />
-            Switch to Personal
+            <span className="hidden sm:inline">Switch to Personal</span>
+            <span className="sm:hidden">Personal</span>
           </button>
         </div>
       </div>
 
       {/* ══ KPI SECTION: Health Score spans 2 rows + 8 equal cards ══ */}
-      <div className="grid grid-cols-5 gap-4" style={{ gridTemplateRows: "auto auto" }}>
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4" style={{ gridTemplateRows: "auto auto" }}>
 
-        {/* Health Score — spans both rows */}
-        <Card className="row-span-2">
+        {/* Health Score — full width on mobile, spans both rows on desktop */}
+        <Card className="col-span-2 lg:col-span-1 lg:row-span-2">
           <CardContent className="h-full flex flex-col justify-center pt-3 pb-4 px-3">
             <div className="flex items-center justify-between mb-1">
               <p className="text-xs font-semibold text-gray-700">Attendance Health Score</p>
@@ -335,7 +345,7 @@ export function HRDashboard({
         {/* 8 KPI cards — 4 per row, filling remaining 4 cols × 2 rows */}
         {kpiCards.map(({ label, sub, value, icon: Icon, bg, ic, today, yest, inv }) => (
           <Card key={label}>
-            <CardContent className="py-4 px-4 h-full">
+            <CardContent className="py-4 px-4 h-full min-h-[100px]">
               <div className="flex items-start gap-3 h-full">
                 <div className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 ${bg}`}>
                   <Icon className={`h-5 w-5 ${ic}`} />
@@ -344,7 +354,9 @@ export function HRDashboard({
                   <p className="text-2xl font-extrabold text-gray-900 leading-tight">{value}</p>
                   <p className="text-xs text-gray-500 leading-tight">{label}</p>
                   <p className="text-[10px] text-gray-400">{sub}</p>
-                  {yest > 0 && <Delta today={Number(today)} yesterday={Number(yest)} invert={inv} />}
+                  <div className="h-4 flex items-center">
+                    {yest > 0 ? <Delta today={Number(today)} yesterday={Number(yest)} invert={inv} /> : null}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -510,7 +522,7 @@ export function HRDashboard({
             <p className="text-xs font-semibold text-gray-800 mb-1">Absenteeism Rate</p>
             <HalfGauge value={absentPct} color={R} centerLabel={`${absentPct.toFixed(2)}%`} subLabel="Today" />
             <div className="text-center mt-1 space-y-0.5">
-              {stats.yesterday_absent !== undefined && (
+              {stats.yesterday_absent !== undefined && stats.yesterday_absent > 0 && (
                 <Delta today={stats.absent_today} yesterday={stats.yesterday_absent} invert />
               )}
               <p className="text-[10px] text-gray-400">Target: &lt; 10%</p>
@@ -522,27 +534,33 @@ export function HRDashboard({
         <Card>
           <CardContent className="py-3 px-3">
             <p className="text-xs font-semibold text-gray-800 mb-1">Top Reasons for Absence</p>
-            <ResponsiveContainer width="100%" height={110}>
-              <PieChart>
-                <Pie data={reasons} cx="50%" cy="50%" innerRadius={28} outerRadius={46}
-                  dataKey="count" nameKey="reason" paddingAngle={2}>
-                  {reasons.map((_, i) => (
-                    <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+            {reasons.length === 0 ? (
+              <p className="text-[10px] text-gray-400 py-8 text-center">No leave data this year</p>
+            ) : (
+              <>
+                <ResponsiveContainer width="100%" height={110}>
+                  <PieChart>
+                    <Pie data={reasons} cx="50%" cy="50%" innerRadius={28} outerRadius={46}
+                      dataKey="count" nameKey="reason" paddingAngle={2}>
+                      {reasons.map((_, i) => (
+                        <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(v) => [`${Math.round(Number(v) / reasonTotal * 100)}%`]} />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="space-y-0.5 mt-1">
+                  {reasons.slice(0, 5).map((r, i) => (
+                    <div key={i} className="flex items-center gap-1.5 text-[10px]">
+                      <span className="h-2 w-2 rounded-sm shrink-0" style={{ background: PIE_COLORS[i % PIE_COLORS.length] }} />
+                      <span className="text-gray-600 truncate flex-1">{r.reason}</span>
+                      <span className="font-bold text-gray-700">{Math.round(r.count / reasonTotal * 100)}%</span>
+                    </div>
                   ))}
-                </Pie>
-                <Tooltip formatter={(v) => [`${Math.round(Number(v) / reasonTotal * 100)}%`]} />
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="space-y-0.5 mt-1">
-              {reasons.slice(0, 5).map((r, i) => (
-                <div key={i} className="flex items-center gap-1.5 text-[10px]">
-                  <span className="h-2 w-2 rounded-sm shrink-0" style={{ background: PIE_COLORS[i % PIE_COLORS.length] }} />
-                  <span className="text-gray-600 truncate flex-1">{r.reason}</span>
-                  <span className="font-bold text-gray-700">{Math.round(r.count / reasonTotal * 100)}%</span>
                 </div>
-              ))}
-            </div>
-            <p className="text-[9px] text-gray-400 mt-1.5">Total Records: {reasonTotal}</p>
+                <p className="text-[9px] text-gray-400 mt-1.5">Total Records: {reasonTotal}</p>
+              </>
+            )}
           </CardContent>
         </Card>
 
@@ -567,7 +585,6 @@ export function HRDashboard({
             <div className="flex flex-col items-center py-2">
               <p className="text-3xl font-extrabold text-rose-500">{stats.turnover_ytd ?? 0}%</p>
               <p className="text-[10px] text-gray-500 mt-0.5">Turnover Rate</p>
-              <p className="text-[10px] text-emerald-500 mt-0.5">↓ 1.8% vs Last Year</p>
             </div>
             <div className="w-full bg-gray-100 rounded-full h-1.5 mt-1 mb-3">
               <div className="h-full bg-rose-400 rounded-full"
@@ -575,12 +592,12 @@ export function HRDashboard({
             </div>
             <div className="grid grid-cols-2 gap-2 text-center">
               <div className="bg-red-50 rounded-lg py-2">
-                <p className="text-sm font-extrabold text-red-500">--</p>
-                <p className="text-[9px] text-gray-400">Total Left</p>
+                <p className="text-sm font-extrabold text-gray-500 text-[10px]">Inactive/Left</p>
+                <p className="text-[9px] text-gray-400">See HR Records</p>
               </div>
               <div className="bg-emerald-50 rounded-lg py-2">
                 <p className="text-sm font-extrabold text-emerald-500">{stats.recent_hires}</p>
-                <p className="text-[9px] text-gray-400">Total Hired</p>
+                <p className="text-[9px] text-gray-400">Hired (30d)</p>
               </div>
             </div>
           </CardContent>
@@ -624,10 +641,11 @@ export function HRDashboard({
         <Card>
           <CardContent className="py-3 px-3">
             <p className="text-xs font-semibold text-gray-800 mb-3">Quick Actions</p>
-            <div className="grid grid-cols-4 gap-2">
-              {QUICK.map(({ label, Icon, bg, ic }) => (
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+              {QUICK.map(({ label, Icon, bg, ic, href }) => (
                 <button key={label}
-                  className={`flex flex-col items-center gap-1.5 p-2 rounded-xl ${bg} hover:scale-105 transition-transform cursor-pointer`}>
+                  onClick={() => router.push(href)}
+                  className={`flex flex-col items-center gap-1.5 p-2 rounded-xl ${bg} hover:scale-105 active:scale-95 transition-transform cursor-pointer`}>
                   <Icon className={`h-5 w-5 ${ic}`} />
                   <span className="text-[9px] font-medium text-gray-600 text-center leading-tight whitespace-pre-line">{label}</span>
                 </button>
@@ -646,30 +664,46 @@ export function HRDashboard({
             {!(stats.upcoming_leaves?.length) ? (
               <p className="text-[10px] text-gray-400 py-4 text-center">No upcoming leave requests</p>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-[10px]">
-                  <thead>
-                    <tr className="border-b border-gray-100">
-                      {["Employee","Department","Leave Type","From","To","Days","Status"].map(h => (
-                        <th key={h} className="py-1.5 px-1.5 text-left font-semibold text-gray-400 whitespace-nowrap">{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {(stats.upcoming_leaves ?? []).map((lv: UpcomingLeave, i: number) => (
-                      <tr key={i} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-                        <td className="py-1.5 px-1.5 font-medium text-gray-800 whitespace-nowrap">{lv.name}</td>
-                        <td className="py-1.5 px-1.5 text-gray-500">{lv.dept}</td>
-                        <td className="py-1.5 px-1.5 text-gray-600 whitespace-nowrap">Type {lv.leave_type}</td>
-                        <td className="py-1.5 px-1.5 text-gray-600 whitespace-nowrap">{lv.from_date}</td>
-                        <td className="py-1.5 px-1.5 text-gray-600 whitespace-nowrap">{lv.to_date}</td>
-                        <td className="py-1.5 px-1.5 text-center font-semibold text-gray-700">{lv.days}</td>
-                        <td className="py-1.5 px-1.5 text-center"><StatusBadge status={lv.status} /></td>
+              <>
+                {/* Mobile card view */}
+                <div className="sm:hidden space-y-2">
+                  {(stats.upcoming_leaves ?? []).map((lv: UpcomingLeave, i: number) => (
+                    <div key={i} className="bg-gray-50 rounded-lg p-2.5">
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="text-[11px] font-semibold text-gray-800">{lv.name}</p>
+                        <StatusBadge status={lv.status} />
+                      </div>
+                      <p className="text-[10px] text-gray-500 mb-1">{lv.dept} · Type {lv.leave_type}</p>
+                      <p className="text-[10px] text-gray-500">{lv.from_date} → {lv.to_date} · <span className="font-semibold text-gray-700">{lv.days}d</span></p>
+                    </div>
+                  ))}
+                </div>
+                {/* Desktop table view */}
+                <div className="hidden sm:block overflow-x-auto">
+                  <table className="w-full text-[10px]">
+                    <thead>
+                      <tr className="border-b border-gray-100">
+                        {["Employee","Department","Leave Type","From","To","Days","Status"].map(h => (
+                          <th key={h} className="py-1.5 px-1.5 text-left font-semibold text-gray-400 whitespace-nowrap">{h}</th>
+                        ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {(stats.upcoming_leaves ?? []).map((lv: UpcomingLeave, i: number) => (
+                        <tr key={i} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                          <td className="py-1.5 px-1.5 font-medium text-gray-800 whitespace-nowrap">{lv.name}</td>
+                          <td className="py-1.5 px-1.5 text-gray-500">{lv.dept}</td>
+                          <td className="py-1.5 px-1.5 text-gray-600 whitespace-nowrap">Type {lv.leave_type}</td>
+                          <td className="py-1.5 px-1.5 text-gray-600 whitespace-nowrap">{lv.from_date}</td>
+                          <td className="py-1.5 px-1.5 text-gray-600 whitespace-nowrap">{lv.to_date}</td>
+                          <td className="py-1.5 px-1.5 text-center font-semibold text-gray-700">{lv.days}</td>
+                          <td className="py-1.5 px-1.5 text-center"><StatusBadge status={lv.status} /></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
             )}
             <button className="mt-2 flex items-center gap-1 text-[10px] text-indigo-600 font-semibold hover:underline">
               View All Requests <ChevronRight className="h-3 w-3" />

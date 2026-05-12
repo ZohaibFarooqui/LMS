@@ -18,8 +18,20 @@ export interface AttendanceDateRange {
   to: string;
 }
 
+function applyCompanyBranchFilter(
+  list: HRMSSearchResult[],
+  company: string,
+  branch: string
+): HRMSSearchResult[] {
+  return list.filter((e) => {
+    if (company && e.unit_id != null && String(e.unit_id) !== company) return false;
+    if (branch && e.location != null && String(e.location) !== branch) return false;
+    return true;
+  });
+}
+
 export function useHRMSController() {
-  const { user } = useAuth();
+  const { user, activeCompany, activeBranch } = useAuth();
 
   // Employee list state
   const [employees, setEmployees] = useState<HRMSSearchResult[]>([]);
@@ -59,25 +71,26 @@ export function useHRMSController() {
       const res = await listHRMSEmployees(user.card_no, status || undefined);
       const items = res.items || [];
       setAllEmployees(items);
-      setEmployees(items);
+      setEmployees(applyCompanyBranchFilter(items, activeCompany, activeBranch));
       setSearchQuery("");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load employees");
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, activeCompany, activeBranch]);
 
   // ---- Client-side search filter ----
   const filterByQuery = useCallback((query: string) => {
     setSearchQuery(query);
+    const base = applyCompanyBranchFilter(allEmployees, activeCompany, activeBranch);
     if (!query.trim()) {
-      setEmployees(allEmployees);
+      setEmployees(base);
       return;
     }
     const q = query.toLowerCase();
     setEmployees(
-      allEmployees.filter(
+      base.filter(
         (e) =>
           e.name?.toLowerCase().includes(q) ||
           e.empcode?.toLowerCase().includes(q) ||
@@ -86,7 +99,7 @@ export function useHRMSController() {
           e.email?.toLowerCase().includes(q)
       )
     );
-  }, [allEmployees]);
+  }, [allEmployees, activeCompany, activeBranch]);
 
   // ---- Server search (used when list is not loaded / fallback) ----
   async function search(query: string) {

@@ -29,6 +29,8 @@ export interface HRMSEmployee {
   bldgrp?: string;
   location?: string;
   user_paswd?: string;
+  track_location?: string;
+  track_location_hr?: number;
 }
 
 export interface HRMSEmployeeCreate {
@@ -61,6 +63,8 @@ export interface HRMSEmployeeCreate {
   w_hour?: number;
   bldgrp?: string;
   location?: string;
+  track_location?: string;
+  track_location_hr?: number;
 }
 
 export interface HRDashboardStats {
@@ -174,4 +178,6 @@ export interface HRMSSearchResult {
   card_no?: string;
   sex?: string;
   location?: string;
+  track_location?: string;
+  track_location_hr?: number;
 }

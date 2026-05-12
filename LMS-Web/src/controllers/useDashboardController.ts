@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { fetchDashboard } from "@/services/authService";
 import { fetchLeaveBalances } from "@/services/authService";
@@ -11,6 +11,13 @@ import { LeaveBalance } from "@/models/leave";
 import { AttendanceSummary } from "@/models/attendance";
 import { HRDashboardStats, HRAnalytics } from "@/models/hrms";
 
+const HR_VIEW_KEY = "lms_hr_view";
+
+function readHrViewPref(): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem(HR_VIEW_KEY) === "true";
+}
+
 export function useDashboardController() {
   const { user } = useAuth();
   const [dashboard, setDashboard] = useState<DashboardData | null>(null);
@@ -18,18 +25,41 @@ export function useDashboardController() {
   const [attendanceSummary, setAttendanceSummary] = useState<AttendanceSummary | null>(null);
   const [hrStats, setHrStats] = useState<HRDashboardStats | null>(null);
   const [hrAnalytics, setHrAnalytics] = useState<HRAnalytics | null>(null);
-  const [hrView, setHrView] = useState(false);
-  const [loading, setLoading] = useState(true);
+
+  // Persist hrView across page navigations so the user doesn't lose their place
+  const [hrView, setHrViewState] = useState<boolean>(readHrViewPref);
+  const setHrView = useCallback((v: boolean) => {
+    setHrViewState(v);
+    localStorage.setItem(HR_VIEW_KEY, String(v));
+  }, []);
+
+  // Two-tier loading: initialLoading blocks the page on first load only;
+  // refreshing is a subtle indicator used while data is being updated.
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().split("T")[0]
   );
 
+  // Ref keeps loadDashboard stable across selectedDate changes
+  const selectedDateRef = useRef(selectedDate);
+  selectedDateRef.current = selectedDate;
+
+  // Track whether we have ever loaded data — used to switch from initialLoading to refreshing
+  const hasLoadedRef = useRef(false);
+
   const loadDashboard = useCallback(async (date?: string) => {
     if (!user) return;
-    setLoading(true);
+
+    if (hasLoadedRef.current) {
+      setRefreshing(true);
+    } else {
+      setInitialLoading(true);
+    }
     setError(null);
-    const qdate = date ?? selectedDate;
+
+    const qdate = date ?? selectedDateRef.current;
     try {
       const [dashData, leaveData] = await Promise.all([
         fetchDashboard(user.card_no),
@@ -55,7 +85,6 @@ export function useDashboardController() {
         }
       }
 
-      // Load HR dashboard if user is HR admin
       if (user.hr_admin) {
         try {
           const [stats, analytics] = await Promise.all([
@@ -71,9 +100,11 @@ export function useDashboardController() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load dashboard");
     } finally {
-      setLoading(false);
+      hasLoadedRef.current = true;
+      setInitialLoading(false);
+      setRefreshing(false);
     }
-  }, [user, selectedDate]);
+  }, [user]); // selectedDate read via ref — keeps callback stable
 
   const handleSetSelectedDate = useCallback((date: string) => {
     setSelectedDate(date);
@@ -92,7 +123,8 @@ export function useDashboardController() {
     hrAnalytics,
     hrView,
     setHrView,
-    loading,
+    loading: initialLoading,
+    refreshing,
     error,
     selectedDate,
     setSelectedDate: handleSetSelectedDate,
