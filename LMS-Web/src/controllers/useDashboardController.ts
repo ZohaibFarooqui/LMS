@@ -60,29 +60,42 @@ export function useDashboardController() {
     setError(null);
 
     const qdate = date ?? selectedDateRef.current;
-    try {
-      const [dashData, leaveData] = await Promise.all([
-        fetchDashboard(user.card_no),
-        fetchLeaveBalances(user.card_no),
-      ]);
-      setDashboard(dashData);
-      setLeaveBalances(leaveData.items || []);
+    const hasEmployeeRecord = user.has_employee_features !== false;
 
-      if (dashData.card_no) {
-        const now = new Date();
-        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-        const fromDate = firstDay.toISOString().split("T")[0];
-        const toDate = now.toISOString().split("T")[0];
-        try {
-          const summaryData = await fetchAttendanceSummary(
-            dashData.card_no,
-            fromDate,
-            toDate
-          );
-          setAttendanceSummary(summaryData.body);
-        } catch {
-          // Attendance summary might not be available
+    try {
+      // Employee data fetches — only if this user actually has an employee record.
+      // SEC_USERNAME-only HR admins (e.g. 3018224986) have no HR_EMP_MASTER row,
+      // so dashboard/leave/attendance APIs would 404. Skip and rely on HR view.
+      if (hasEmployeeRecord) {
+        const [dashData, leaveData] = await Promise.all([
+          fetchDashboard(user.card_no),
+          fetchLeaveBalances(user.card_no),
+        ]);
+        setDashboard(dashData);
+        setLeaveBalances(leaveData.items || []);
+
+        if (dashData.card_no) {
+          const now = new Date();
+          const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+          const fromDate = firstDay.toISOString().split("T")[0];
+          const toDate = now.toISOString().split("T")[0];
+          try {
+            const summaryData = await fetchAttendanceSummary(
+              dashData.card_no,
+              fromDate,
+              toDate
+            );
+            setAttendanceSummary(summaryData.body);
+          } catch {
+            // Attendance summary might not be available
+          }
         }
+      } else {
+        // No employee record — force HR view, clear any stale personal data
+        setDashboard(null);
+        setLeaveBalances([]);
+        setAttendanceSummary(null);
+        if (!hrView) setHrView(true);
       }
 
       if (user.hr_admin) {
@@ -104,6 +117,7 @@ export function useDashboardController() {
       setInitialLoading(false);
       setRefreshing(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, activeCompany, activeBranch]); // selectedDate read via ref — keeps callback stable
 
   // Reload HR sections when the selected company/branch changes

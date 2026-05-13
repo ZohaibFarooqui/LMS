@@ -24,8 +24,11 @@ import {
 import { useState, useRef, useEffect } from "react";
 import { CompanyItem, BranchItem } from "@/models/auth";
 
+// Dashboard is shown to everyone who has either employee features OR hr_admin
+// (SEC_USERNAME-only admins see it as the HR dashboard).
+const dashboardNavItem = { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard };
+
 const employeeNavItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/leave/apply", label: "Apply Leave", icon: CalendarPlus },
   { href: "/leave/status", label: "Leave Status", icon: ClipboardList },
   { href: "/attendance", label: "Attendance", icon: Clock },
@@ -114,7 +117,9 @@ export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
 
   const showEmployeeNav = !!user?.has_employee_features;
+  const showDashboard = showEmployeeNav || !!user?.hr_admin;
   const navItems = [
+    ...(showDashboard ? [dashboardNavItem] : []),
     ...(showEmployeeNav ? employeeNavItems : []),
     ...(user?.hr_admin ? hrNavItems : []),
   ];

@@ -6,7 +6,10 @@ import { useEffect } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Spinner } from "@/components/ui/Spinner";
 
-const EMPLOYEE_ONLY_ROUTES = ["/dashboard", "/leave", "/attendance", "/profile"];
+// Pages that require an employee record in HR_EMP_MASTER.
+// Note: /dashboard is intentionally NOT in this list — SEC_USERNAME-only HR
+// admins should still be able to view the HR dashboard there.
+const EMPLOYEE_ONLY_ROUTES = ["/leave", "/attendance", "/profile"];
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();

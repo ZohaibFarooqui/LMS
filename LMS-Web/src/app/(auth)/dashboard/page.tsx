@@ -52,13 +52,27 @@ export default function DashboardPage() {
     );
   }
 
+  // SEC_USERNAME-only HR admins have no personal employee record — they only ever
+  // see the HR dashboard. Don't render the personal view (which would show empty cards).
+  const secOnlyAdmin = user?.has_employee_features === false && !!user?.hr_admin;
+
   // ==================== HR DASHBOARD VIEW ====================
-  if (hrView && hrStats) {
+  if ((hrView && hrStats) || secOnlyAdmin) {
+    if (!hrStats) {
+      return (
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <p className="text-gray-600">HR dashboard data not available.</p>
+          </div>
+        </div>
+      );
+    }
     return (
       <HRDashboard
         stats={hrStats}
         analytics={hrAnalytics}
-        onSwitch={() => setHrView(false)}
+        onSwitch={secOnlyAdmin ? undefined : () => setHrView(false)}
         selectedDate={selectedDate}
         onDateChange={setSelectedDate}
         refreshing={refreshing}

@@ -206,7 +206,7 @@ export function HRDashboard({
 }: {
   stats: HRDashboardStats;
   analytics: HRAnalytics | null;
-  onSwitch: () => void;
+  onSwitch?: () => void;
   selectedDate?: string;
   onDateChange?: (date: string) => void;
   refreshing?: boolean;
@@ -294,14 +294,16 @@ export function HRDashboard({
               className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
             />
           </label>
-          <button
-            onClick={onSwitch}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors text-xs font-medium whitespace-nowrap"
-          >
-            <ToggleRight className="h-4 w-4" />
-            <span className="hidden sm:inline">Switch to Personal</span>
-            <span className="sm:hidden">Personal</span>
-          </button>
+          {onSwitch && (
+            <button
+              onClick={onSwitch}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors text-xs font-medium whitespace-nowrap"
+            >
+              <ToggleRight className="h-4 w-4" />
+              <span className="hidden sm:inline">Switch to Personal</span>
+              <span className="sm:hidden">Personal</span>
+            </button>
+          )}
         </div>
       </div>
 
