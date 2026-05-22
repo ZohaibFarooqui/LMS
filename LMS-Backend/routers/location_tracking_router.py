@@ -152,6 +152,78 @@ async def update_tracking_settings(
         )
 
 
+@router.get("/geofence/{emp_code}")
+async def get_geofence_settings(emp_code: str):
+    """
+    Get attendance geofence settings for an employee from HR_EMP_MASTER.
+
+    The mobile app uses this to decide whether an employee may mark attendance:
+    if FIXED_LOCATION = 'Y', the employee must be within MARGIN metres of
+    (DEFAULT_LATITUDE, DEFAULT_LONGITUDE) to check in/out.
+
+    Returns:
+    {
+        "emp_code": "100505.1",
+        "employee_name": "ABDUL BASIT LASHARI",
+        "fixed_location": "Y",          # 'Y' = geofence enforced, 'N' = anywhere
+        "latitude": 24.85851,           # office latitude (DEFAULT_LATITUDE)
+        "longitude": 67.05,             # office longitude (DEFAULT_LONGITUDE)
+        "margin": 200,                  # allowed radius in metres (MARGIN)
+        "geofence_enabled": true        # convenience flag for the app
+    }
+    """
+    connection = None
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        cursor.execute("""
+            SELECT EMPCODE, NAME, FIXED_LOCATION,
+                   DEFAULT_LATITUDE, DEFAULT_LONGITUDE, MARGIN
+            FROM HR_EMP_MASTER
+            WHERE EMPCODE = :emp_code
+               OR TO_CHAR("ATDTCARD#") = :emp_code
+            FETCH FIRST 1 ROWS ONLY
+        """, {"emp_code": emp_code})
+        result = cursor.fetchone()
+        connection.close()
+        connection = None
+
+        if not result:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Employee {emp_code} not found",
+            )
+
+        empcode, name, fixed_location, lat, lon, margin = result
+        fixed = (fixed_location or "N").strip().upper()
+        lat_f = float(lat) if lat is not None else None
+        lon_f = float(lon) if lon is not None else None
+        margin_f = float(margin) if margin is not None else 200.0
+
+        # Geofence only applies when explicitly enabled AND coordinates exist
+        enabled = fixed == "Y" and lat_f is not None and lon_f is not None
+
+        return {
+            "emp_code": empcode,
+            "employee_name": name,
+            "fixed_location": fixed,
+            "latitude": lat_f,
+            "longitude": lon_f,
+            "margin": margin_f if margin_f and margin_f > 0 else 200.0,
+            "geofence_enabled": enabled,
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        if connection:
+            connection.close()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error fetching geofence settings: {str(e)}",
+        )
+
+
 @router.get("/active-employees")
 async def get_active_tracking_employees():
     """
