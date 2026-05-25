@@ -176,14 +176,45 @@ async def get_geofence_settings(emp_code: str):
     try:
         connection = get_connection()
         cursor = connection.cursor()
+
+        # Discover which of the geofence columns actually exist on
+        # HR_EMP_MASTER. Schema differences (different column names, missing
+        # columns) would otherwise raise ORA-00904 and 500 the whole endpoint.
+        # By substituting NULL for any missing column we keep the response
+        # shape stable and the geofence simply reports as disabled.
+        wanted = ["FIXED_LOCATION", "DEFAULT_LATITUDE", "DEFAULT_LONGITUDE", "MARGIN"]
         cursor.execute("""
-            SELECT EMPCODE, NAME, FIXED_LOCATION,
-                   DEFAULT_LATITUDE, DEFAULT_LONGITUDE, MARGIN
+            SELECT COLUMN_NAME FROM ALL_TAB_COLUMNS
+            WHERE TABLE_NAME = 'HR_EMP_MASTER'
+        """)
+        all_cols = {r[0].upper() for r in cursor.fetchall()}
+        missing = [c for c in wanted if c not in all_cols]
+        if missing:
+            # Log candidates so the operator can spot a typo in the column names
+            candidates = sorted(
+                c for c in all_cols
+                if any(k in c for k in ("LAT", "LON", "MARGIN", "FIX", "GEO", "RADIUS"))
+            )
+            print(
+                f"[GEOFENCE] HR_EMP_MASTER missing columns {missing}. "
+                f"Geofence-related columns present: {candidates}"
+            )
+
+        def col_or_null(name: str) -> str:
+            return name if name in all_cols else "NULL"
+
+        sql = f"""
+            SELECT EMPCODE, NAME,
+                   {col_or_null('FIXED_LOCATION')}    AS fixed_location,
+                   {col_or_null('DEFAULT_LATITUDE')}  AS def_lat,
+                   {col_or_null('DEFAULT_LONGITUDE')} AS def_lon,
+                   {col_or_null('MARGIN')}            AS def_margin
             FROM HR_EMP_MASTER
             WHERE EMPCODE = :emp_code
                OR TO_CHAR("ATDTCARD#") = :emp_code
             FETCH FIRST 1 ROWS ONLY
-        """, {"emp_code": emp_code})
+        """
+        cursor.execute(sql, {"emp_code": emp_code})
         result = cursor.fetchone()
         connection.close()
         connection = None
@@ -195,10 +226,10 @@ async def get_geofence_settings(emp_code: str):
             )
 
         empcode, name, fixed_location, lat, lon, margin = result
-        fixed = (fixed_location or "N").strip().upper()
+        fixed = (str(fixed_location) if fixed_location is not None else "N").strip().upper()
         lat_f = float(lat) if lat is not None else None
         lon_f = float(lon) if lon is not None else None
-        margin_f = float(margin) if margin is not None else 200.0
+        margin_f = float(margin) if margin is not None else None
 
         # Geofence only applies when explicitly enabled AND coordinates exist
         enabled = fixed == "Y" and lat_f is not None and lon_f is not None
@@ -209,19 +240,33 @@ async def get_geofence_settings(emp_code: str):
             "fixed_location": fixed,
             "latitude": lat_f,
             "longitude": lon_f,
-            "margin": margin_f if margin_f and margin_f > 0 else 200.0,
+            "margin": margin_f if (margin_f and margin_f > 0) else 200.0,
             "geofence_enabled": enabled,
+            "missing_columns": missing,  # diagnostic — empty when all expected columns present
         }
 
     except HTTPException:
         raise
     except Exception as e:
         if connection:
-            connection.close()
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error fetching geofence settings: {str(e)}",
-        )
+            try:
+                connection.close()
+            except Exception:
+                pass
+        # Fail-open: log the error and return geofence disabled rather than
+        # 500. The mobile app already treats any error as "no geofence", so
+        # attendance is never blocked by a server-side hiccup.
+        print(f"[GEOFENCE] Error fetching settings for {emp_code}: {e}")
+        return {
+            "emp_code": emp_code,
+            "employee_name": "",
+            "fixed_location": "N",
+            "latitude": None,
+            "longitude": None,
+            "margin": 200.0,
+            "geofence_enabled": False,
+            "error": str(e),
+        }
 
 
 @router.get("/active-employees")
