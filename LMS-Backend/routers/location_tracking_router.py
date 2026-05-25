@@ -158,7 +158,7 @@ async def get_geofence_settings(emp_code: str):
     Get attendance geofence settings for an employee from HR_EMP_MASTER.
 
     The mobile app uses this to decide whether an employee may mark attendance:
-    if FIXED_LOCATION = 'Y', the employee must be within MARGIN metres of
+    if LOCATION_FIXED = 'Y', the employee must be within MARGIN metres of
     (DEFAULT_LATITUDE, DEFAULT_LONGITUDE) to check in/out.
 
     Returns:
@@ -182,7 +182,7 @@ async def get_geofence_settings(emp_code: str):
         # columns) would otherwise raise ORA-00904 and 500 the whole endpoint.
         # By substituting NULL for any missing column we keep the response
         # shape stable and the geofence simply reports as disabled.
-        wanted = ["FIXED_LOCATION", "DEFAULT_LATITUDE", "DEFAULT_LONGITUDE", "MARGIN"]
+        wanted = ["LOCATION_FIXED", "DEFAULT_LATITUDE", "DEFAULT_LONGITUDE", "MARGIN"]
         cursor.execute("""
             SELECT COLUMN_NAME FROM ALL_TAB_COLUMNS
             WHERE TABLE_NAME = 'HR_EMP_MASTER'
@@ -205,7 +205,7 @@ async def get_geofence_settings(emp_code: str):
 
         sql = f"""
             SELECT EMPCODE, NAME,
-                   {col_or_null('FIXED_LOCATION')}    AS fixed_location,
+                   {col_or_null('LOCATION_FIXED')}    AS fixed_location,
                    {col_or_null('DEFAULT_LATITUDE')}  AS def_lat,
                    {col_or_null('DEFAULT_LONGITUDE')} AS def_lon,
                    {col_or_null('MARGIN')}            AS def_margin
