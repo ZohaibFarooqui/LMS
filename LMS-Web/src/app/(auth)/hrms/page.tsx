@@ -252,7 +252,7 @@ function StatusBadge({ status }: { status?: string }) {
 // ──────────────────────────────────────────────
 
 export default function HRMSPage() {
-  const { user } = useAuth();
+  const { user, activeCompany, activeBranch } = useAuth();
   const ctrl = useHRMSController();
 
   const [section, setSection] = useState<"employees" | "locations" | "setup">("employees");
@@ -275,23 +275,28 @@ export default function HRMSPage() {
   const [refReligions,  setRefReligions]  = useState<Religion[]>([]);
   const [refRptOfficers,setRefRptOfficers]= useState<ReportingOfficer[]>([]);
 
+  // Reference data — refetched when the selected company/branch changes so
+  // employee-register/edit dropdowns only show options for the active scope.
+  // Units, locations, religions, reporting-officers stay global on purpose.
   useEffect(() => {
+    const c = activeCompany || undefined;
+    const b = activeBranch || undefined;
     Promise.all([
-      fetchDepartments(), fetchGrades(), fetchDesignations(),
-      fetchShifts(), fetchBloodGroups(), fetchCadre(), fetchUnits(),
+      fetchDepartments(c, b), fetchGrades(c, b), fetchDesignations(undefined, c, b),
+      fetchShifts(c, b), fetchBloodGroups(c, b), fetchCadre(c, b), fetchUnits(),
       fetchReligions(), fetchReportingOfficers(),
-    ]).then(([d, g, des, s, bg, c, u, rel, rpt]) => {
+    ]).then(([d, g, des, s, bg, ca, u, rel, rpt]) => {
       setRefDepts(d.items);
       setRefGrades(g.items);
       setRefDesigs(des.items);
       setRefShifts(s.items);
       setRefBG(bg.items);
-      setRefCadre(c.items);
+      setRefCadre(ca.items);
       setRefUnits(u.items);
       setRefReligions(rel.items);
       setRefRptOfficers(rpt.items);
     }).catch(console.error);
-  }, []);
+  }, [activeCompany, activeBranch]);
 
   // Load employees on mount and when tab changes
   useEffect(() => {
