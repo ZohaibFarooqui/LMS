@@ -226,10 +226,41 @@ def register_face(card_no1, b64_images, created_at):
 
 
 # ******** VERIFY
+def _lookup_emp_name(card_no: str):
+    """Best-effort lookup of EMP_NAME from Oracle for the given card_no.
+    Returns None if not found / on any error."""
+    if not card_no:
+        return None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT e.EMP_NAME
+            FROM EMPLOYEE e
+            WHERE TO_CHAR(e.CARD_NO) = :card
+               OR TO_CHAR(e.CARD_NO) = :card_int
+            FETCH FIRST 1 ROWS ONLY
+        """, {
+            "card": card_no,
+            "card_int": card_no.split(".")[0] if "." in card_no else card_no,
+        })
+        row = cursor.fetchone()
+        return row[0] if row else None
+    except Exception as e:
+        print("VERIFY NAME LOOKUP ERROR:", e)
+        return None
+    finally:
+        try:
+            cursor.close()
+            conn.close()
+        except Exception:
+            pass
+
+
 def verify_face(card_no1, b64_images):
 
     if index is None:
-        return {"body": {"is_match": False, "confidence": 0.0}}
+        return {"body": {"is_match": False, "confidence": 0.0, "emp_name": None}}
 
     similarities = []
 
@@ -254,8 +285,10 @@ def verify_face(card_no1, b64_images):
         if len(similarities) >= 3:
             break
 
+    emp_name = _lookup_emp_name(card_no1)
+
     if len(similarities) < 2:
-        return {"body": {"is_match": False, "confidence": 0.0}}
+        return {"body": {"is_match": False, "confidence": 0.0, "emp_name": emp_name}}
 
     final_similarity = max(similarities)
 
@@ -263,14 +296,16 @@ def verify_face(card_no1, b64_images):
         return {
             "body": {
                 "is_match": True,
-                "confidence": final_similarity
+                "confidence": final_similarity,
+                "emp_name": emp_name,
             }
         }
 
     return {
         "body": {
             "is_match": False,
-            "confidence": final_similarity
+            "confidence": final_similarity,
+            "emp_name": emp_name,
         }
     }
 
